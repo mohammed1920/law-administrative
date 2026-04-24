@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الفصل الأول – أصل الدولة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+            padding: 20px;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(194,157,95,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(16,185,129,0.05) 0%, transparent 50%);
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(194,157,95,0.15);
+            padding: 36px 40px 28px;
+            max-width: 780px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #c29d5f, #f0c070, #c29d5f);
+        }
+
+        /* Header */
+        .quiz-header { text-align: center; margin-bottom: 28px; }
+
+        h1#chapter-title {
+            color: #c29d5f;
+            font-size: 1.55rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 10px rgba(194,157,95,0.3);
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Progress */
+        #status {
+            text-align: center;
+            color: #c29d5f;
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
+        }
+
+        .progress-bar-wrap {
+            background: #0f172a;
+            border-radius: 99px;
+            height: 6px;
+            margin-bottom: 28px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c29d5f, #f0c070);
+            border-radius: 99px;
+            transition: width 0.5s cubic-bezier(.4,0,.2,1);
+        }
+
+        /* Score display */
+        .score-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(194,157,95,0.12);
+            border: 1px solid rgba(194,157,95,0.3);
+            border-radius: 10px;
+            padding: 5px 12px;
+            color: #c29d5f;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Question */
+        .q-text {
+            background: rgba(15,23,42,0.6);
+            border: 1px solid rgba(194,157,95,0.2);
+            border-radius: 14px;
+            padding: 20px 22px;
+            color: #e2e8f0;
+            font-size: 1.08rem;
+            font-weight: 600;
+            line-height: 1.75;
+            margin-bottom: 22px;
+            min-height: 70px;
+        }
+
+        .q-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #c29d5f, #f0c070);
+            color: #0f172a;
+            border-radius: 8px;
+            padding: 2px 10px;
+            font-size: 0.78rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        /* Options */
+        #options { display: flex; flex-direction: column; gap: 11px; margin-bottom: 24px; }
+
+        .option-btn {
+            background: rgba(30,41,59,0.8);
+            border: 1.5px solid rgba(100,116,139,0.35);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: #cbd5e1;
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            font-size: 0.97rem;
+            font-weight: 600;
+            text-align: right;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(194,157,95,0.08), transparent);
+            opacity: 0;
+            transition: opacity 0.22s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: #c29d5f;
+            color: #f1e3c5;
+            transform: translateX(-3px);
+            box-shadow: 0 4px 18px rgba(194,157,95,0.15);
+        }
+
+        .option-btn:hover:not(:disabled)::before { opacity: 1; }
+
+        .option-btn.correct {
+            background: rgba(16,185,129,0.15);
+            border-color: #10b981;
+            color: #6ee7b7;
+            box-shadow: 0 0 0 2px rgba(16,185,129,0.25), 0 4px 18px rgba(16,185,129,0.15);
+        }
+
+        .option-btn.wrong {
+            background: rgba(239,68,68,0.12);
+            border-color: #ef4444;
+            color: #fca5a5;
+            box-shadow: 0 0 0 2px rgba(239,68,68,0.2);
+        }
+
+        .option-btn:disabled { cursor: default; transform: none !important; }
+
+        /* Option label badge */
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: rgba(194,157,95,0.15);
+            border-radius: 7px;
+            font-size: 0.8rem;
+            font-weight: 900;
+            margin-left: 10px;
+            color: #c29d5f;
+            flex-shrink: 0;
+            float: left;
+            transition: all 0.22s;
+        }
+
+        .option-btn.correct .option-label { background: rgba(16,185,129,0.3); color: #6ee7b7; }
+        .option-btn.wrong .option-label { background: rgba(239,68,68,0.25); color: #fca5a5; }
+
+        /* Feedback */
+        #feedback {
+            display: none;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.93rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            text-align: center;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        #feedback.correct-fb {
+            background: rgba(16,185,129,0.15);
+            border: 1px solid rgba(16,185,129,0.4);
+            color: #34d399;
+        }
+
+        #feedback.wrong-fb {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.35);
+            color: #f87171;
+        }
+
+        /* Next button */
+        #next-btn {
+            display: none;
+            width: 100%;
+            background: linear-gradient(135deg, #c29d5f, #d4a96a);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: #0f172a;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.22s;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 20px rgba(194,157,95,0.3);
+        }
+
+        #next-btn:hover {
+            background: linear-gradient(135deg, #d4a96a, #e8be80);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(194,157,95,0.4);
+        }
+
+        /* Footer navigation */
+        .footer-nav {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            transition: all 0.22s;
+        }
+
+        .btn-home {
+            background: rgba(100,116,139,0.15);
+            border: 1.5px solid rgba(100,116,139,0.35);
+            color: #94a3b8;
+        }
+
+        .btn-home:hover {
+            background: rgba(100,116,139,0.25);
+            color: #cbd5e1;
+            border-color: #64748b;
+            transform: translateY(-2px);
+        }
+
+        .btn-telegram {
+            background: rgba(0,136,204,0.12);
+            border: 1.5px solid rgba(0,136,204,0.35);
+            color: #38bdf8;
+        }
+
+        .btn-telegram:hover {
+            background: rgba(0,136,204,0.22);
+            color: #7dd3fc;
+            border-color: #0088cc;
+            transform: translateY(-2px);
+        }
+
+        /* Result Screen */
+        #result-screen {
+            display: none;
+            text-align: center;
+            animation: fadeSlide 0.5s ease;
+        }
+
+        .result-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(#c29d5f var(--pct), #1e293b 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(194,157,95,0.3);
+        }
+
+        .result-circle-inner {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-pct { color: #c29d5f; font-size: 1.9rem; font-weight: 900; line-height: 1; }
+        .result-label { color: #94a3b8; font-size: 0.75rem; font-weight: 700; }
+
+        .result-title { color: #e2e8f0; font-size: 1.4rem; font-weight: 900; margin-bottom: 8px; }
+        .result-sub { color: #94a3b8; font-size: 0.92rem; margin-bottom: 28px; }
+        .result-grade {
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 99px;
+            font-size: 1rem;
+            font-weight: 900;
+            margin-bottom: 28px;
+        }
+        .grade-excellent { background: rgba(16,185,129,0.15); border: 1px solid #10b981; color: #34d399; }
+        .grade-good      { background: rgba(194,157,95,0.15); border: 1px solid #c29d5f; color: #f0c070; }
+        .grade-pass      { background: rgba(59,130,246,0.15); border: 1px solid #3b82f6; color: #93c5fd; }
+        .grade-fail      { background: rgba(239,68,68,0.12); border: 1px solid #ef4444; color: #f87171; }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #c29d5f, #d4a96a);
+            border: none;
+            border-radius: 12px;
+            padding: 13px 36px;
+            color: #0f172a;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.22s;
+            box-shadow: 0 4px 20px rgba(194,157,95,0.3);
+            margin-bottom: 20px;
+            display: block;
+            width: 100%;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(194,157,95,0.4);
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(194,157,95,0.25), transparent);
+            margin: 20px 0;
+        }
+
+        @media (max-width: 520px) {
+            .card { padding: 24px 18px 20px; }
+            h1#chapter-title { font-size: 1.2rem; }
+            .q-text { font-size: 0.97rem; }
+            .option-btn { font-size: 0.9rem; padding: 12px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card" id="quiz-box">
+
+    <div class="score-badge" id="score-badge">✅ 0 صح</div>
+
+    <div class="quiz-header">
+        <h1 id="chapter-title">الفصل الأول – أصل الدولة</h1>
+        <p class="subtitle">مبادئ القانون الدستوري | د. حميد حنون</p>
+    </div>
+
+    <div id="status">سؤال 1 من 65</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+
+    <div class="q-text" id="question">
+        <span class="q-number" id="q-number">س١</span><br>
+        نص السؤال
+    </div>
+
+    <div id="options"></div>
+
+    <div id="feedback"></div>
+
+    <button id="next-btn" onclick="nextQuestion()">التالي ←</button>
+
+    <div class="footer-nav">
+        <a href="index.html" class="btn-home">🏠 الرجوع للقائمة الرئيسية</a>
+        <a href="https://t.me/M5M5P" target="_blank" class="btn-telegram">📢 قناة التليجرام</a>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen">
+        <div class="result-circle" id="result-circle">
+            <div class="result-circle-inner">
+                <div class="result-pct" id="result-pct">0%</div>
+                <div class="result-label">النتيجة</div>
+            </div>
+        </div>
+        <div class="result-title">انتهى الاختبار!</div>
+        <div class="result-sub" id="result-sub">أجبت على 0 سؤالاً صحيحاً من 65</div>
+        <div class="result-grade" id="result-grade"></div>
+        <button class="btn-restart" onclick="restartQuiz()">🔄 إعادة الاختبار</button>
+        <div class="footer-nav" style="justify-content:center">
+            <a href="index.html" class="btn-home">🏠 القائمة الرئيسية</a>
+            <a href="https://t.me/M5M5P" target="_blank" class="btn-telegram">📢 قناة التليجرام</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const LABELS = ['أ', 'ب', 'ج', 'د'];
+
+const questions = [
+    // ======= المبحث الأول: النظرية التيوقراطية =======
+    {
+        q: "إلى كم قسم تنقسم النظرية التيوقراطية في تفسير أصل الدولة؟",
+        opts: ["قسم واحد", "قسمان", "ثلاثة أقسام", "أربعة أقسام"],
+        ans: 1
+    },
+    {
+        q: "ما هما قسما النظرية التيوقراطية؟",
+        opts: ["نظرية الحكم الشعبي ونظرية الحكم الملكي", "نظرية القوة ونظرية العقد", "نظرية الحق الإلهي المباشر ونظرية الحق الإلهي غير المباشر", "نظرية الأسرة ونظرية الدولة"],
+        ans: 2
+    },
+    {
+        q: "وفق نظرية الحق الإلهي المباشر، ماذا يُعدّ الله في علاقته بالدولة؟",
+        opts: ["مراقباً للحكام", "خالقاً للدولة وكل شيء بما فيها", "مستشاراً للحكام", "مصدراً للقانون فقط"],
+        ans: 1
+    },
+    {
+        q: "وفق نظرية الحق الإلهي المباشر، كيف يختار الله الحكام؟",
+        opts: ["عن طريق الانتخاب الشعبي", "عن طريق العناية الإلهية", "بشكل مباشر ويمدهم بروح من عنده", "عن طريق الوراثة"],
+        ans: 2
+    },
+    {
+        q: "أمام من يكون الحكام مسؤولين وفق نظرية الحق الإلهي المباشر؟",
+        opts: ["أمام الشعب", "أمام البرلمان", "أمام القضاء", "أمام الله وحده لا أمام شعوبهم"],
+        ans: 3
+    },
+    {
+        q: "لماذا كانت نظرية الحق الإلهي المباشر سائدة في العصور القديمة لدى بعض الشعوب؟",
+        opts: ["لأن الحكام كانوا عادلين", "لأن الدين كان له أثر عميق في النفوس", "لأن الشعوب طالبت بها", "لأن القانون كان يفرضها"],
+        ans: 1
+    },
+    {
+        q: "ما الاسم الذي كان فراعنة مصر يُعرَفون به في عهد الأسرتين الأولى والثانية؟",
+        opts: ["رع", "أوزيريس", "هورس", "آمون"],
+        ans: 2
+    },
+    {
+        q: "ما الذي فعله بعض الحكام باستغلالهم للنظرية التيوقراطية؟",
+        opts: ["حاربوا الدين", "دافعوا عن الشعوب", "استبدوا الحكام واستحوذوا على السلطة ومعارضتهم كمن يعارض الله", "أقاموا الديمقراطية"],
+        ans: 2
+    },
+    {
+        q: "ما الفرق الجوهري بين نظرية الحق الإلهي المباشر ونظرية العناية الإلهية؟",
+        opts: ["لا فرق بينهما", "في العناية الإلهية الله يختار الحكام مباشرة", "في العناية الإلهية يتم الاختيار بطريقة غير مباشرة من خلال توجيه الأحداث", "في العناية الإلهية الشعب هو من يختار"],
+        ans: 2
+    },
+    {
+        q: "من الملك الفرنسي الذي اعتمد على نظرية العناية الإلهية وقال إن سلطة الملوك مصدرها من الله؟",
+        opts: ["لويس الخامس عشر", "لويس الرابع عشر", "نابليون بونابرت", "شارل العاشر"],
+        ans: 1
+    },
+    {
+        q: "ماذا أكد لويس الخامس عشر في مقدمة قانون أصدره عام 1770؟",
+        opts: ["أن الشعب مصدر السلطة", "أنه لم يتلق التاج إلا من الله وفسلطة القوانين من اختصاصه وحده", "أن البرلمان يشاركه السلطة", "أن الدستور فوق الجميع"],
+        ans: 1
+    },
+    {
+        q: "إلى ماذا تؤدي النظرية التيوقراطية بحسب الكتاب؟",
+        opts: ["إلى الديمقراطية وسيادة الشعب", "إلى تحقيق العدالة الاجتماعية", "إلى استبداد الحكام واستحواذهم على السلطة", "إلى تقييد سلطة الحاكم"],
+        ans: 2
+    },
+    {
+        q: "هل يجوز وصف النظرية التيوقراطية بأنها مذهب ديني؟",
+        opts: ["نعم، لأنها تستند إلى اسم الله", "لا، لأنها خرافات من صنع العقل البشري تنسب إلى الدين ظلماً", "نعم، لأن الكنيسة تؤيدها", "لا، لأنها تعارض الدين صراحة"],
+        ans: 1
+    },
+
+    // ======= المبحث الثاني: نظرية العقد الاجتماعي =======
+    {
+        q: "إلى ماذا ترجع نظرية العقد الاجتماعي أساس نشأة الدولة؟",
+        opts: ["إلى الإرادة الإلهية المباشرة", "إلى إرادة الأفراد واتفاقهم على إقامة مجتمع سياسي", "إلى القوة والعنف", "إلى تطور الأسرة الطبيعي"],
+        ans: 1
+    },
+    {
+        q: "لماذا نُسبت نظرية العقد الاجتماعي إلى روسو دون غيره رغم أن هوبز ولوك تناولاها قبله؟",
+        opts: ["لأنه كان أول من تناولها", "لأنه الوحيد الذي آمن بها", "لأنه عرضها بوضوح وعبّر عن آرائه وآراء من سبقوه بأسلوب ثوري", "لأنه دحض آراء هوبز ولوك"],
+        ans: 2
+    },
+    {
+        q: "ما اسم الكتاب الشهير الذي تناول فيه روسو نظرية العقد الاجتماعي؟",
+        opts: ["الأمير", "روح القوانين", "اللفياثان", "العقد الاجتماعي"],
+        ans: 3
+    },
+    {
+        q: "من الفيلسوف الذي كتب كتاب 'اللفياثان'؟",
+        opts: ["جان جاك روسو", "جون لوك", "توماس هوبز", "مونتسكيو"],
+        ans: 2
+    },
+    {
+        q: "ما حال الأفراد قبل قيام الدولة وفق هوبز؟",
+        opts: ["حرية كاملة واستقرار تام", "فوضى وعدم استقرار وكانت الغلبة للأقوياء والذل للضعفاء", "حياة طبيعية هادئة مع كامل الحقوق", "نظام اجتماعي منظم"],
+        ans: 1
+    },
+    {
+        q: "كيف وصف هوبز حياة الإنسان قبل إبرام العقد؟",
+        opts: ["جنة على الأرض", "حياة آمنة ومستقرة", "اتسمت بالشقاء والبؤس والهوان وافتقر الأفراد للأمن والحرية", "حياة مزدهرة حضارياً"],
+        ans: 2
+    },
+    {
+        q: "من هم أطراف العقد الاجتماعي وفق هوبز؟",
+        opts: ["الأفراد والحاكم معاً", "الأفراد فقط فيما بينهم دون الحاكم", "الحاكم والكنيسة", "الحاكم والجيش"],
+        ans: 1
+    },
+    {
+        q: "هل الحاكم طرف في العقد الاجتماعي وفق هوبز؟",
+        opts: ["نعم، طرف رئيسي", "نعم، طرف ثانوي", "لا، الحاكم ليس طرفاً في العقد", "نعم أحياناً وأحياناً لا"],
+        ans: 2
+    },
+    {
+        q: "عن ماذا تنازل الأفراد وفق رؤية هوبز في إبرام العقد؟",
+        opts: ["عن جزء من حقوقهم فقط", "عن حقوقهم السياسية فقط", "عن جميع حقوقهم للحاكم الذي اختاروه", "لم يتنازلوا عن أي حق"],
+        ans: 2
+    },
+    {
+        q: "كيف تكون سلطة الحاكم وفق نظرية هوبز؟",
+        opts: ["سلطة محدودة ومقيدة بالدستور", "سلطة مطلقة لا قيد عليها", "سلطة مشتركة مع الشعب", "سلطة تشاركية مع البرلمان"],
+        ans: 1
+    },
+    {
+        q: "من كان هوبز من أنصارهم سياسياً؟",
+        opts: ["أنصار الديمقراطية المباشرة", "أنصار الحكم الجمهوري", "أنصار الحكم المطلق وكان من أنصار الملكية في انكلترا", "أنصار الحكم البرلماني"],
+        ans: 2
+    },
+    {
+        q: "ما وصف الكتاب لموقف هوبز من العقد الاجتماعي؟",
+        opts: ["أنه دافع عن ثورة 1688", "أنه من أنصار الحكم المقيد", "أنه من أنصار الحكم المطلق ومن المؤيدين لتقوية سلطة الملوك", "أنه كان ضد الملكية"],
+        ans: 2
+    },
+    {
+        q: "ما وضع الأفراد قبل قيام الدولة وفق لوك؟",
+        opts: ["فوضى تامة ومليئة بالعنف", "كانوا يعيشون في حالة طبيعية متمتعين بكامل حقوقهم", "عبودية تامة لبعضهم", "حياة حرب مستمرة"],
+        ans: 1
+    },
+    {
+        q: "لماذا انتقل الأفراد من الحالة الطبيعية إلى إقامة الدولة وفق لوك؟",
+        opts: ["بسبب الفوضى والعنف", "بسبب عدم وجود قاضٍ منصف يفصل في المنازعات بين الأفراد", "بسبب الحروب الخارجية", "بسبب الفقر والمجاعات"],
+        ans: 1
+    },
+    {
+        q: "من هم أطراف العقد الاجتماعي وفق لوك؟",
+        opts: ["الأفراد فقط فيما بينهم", "الأفراد والحاكم معاً", "الحاكم والكنيسة", "الحاكم وحده"],
+        ans: 1
+    },
+    {
+        q: "عم تنازل الأفراد في العقد وفق رؤية لوك؟",
+        opts: ["عن جميع حقوقهم للحاكم", "لم يتنازلوا عن أي شيء", "تنازلوا عن جزء من حقوقهم فقط وليس الجميع", "تنازلوا عن حقوقهم الاقتصادية فقط"],
+        ans: 2
+    },
+    {
+        q: "ما حق الأفراد تجاه الحاكم إذا أخل بشروط العقد وفق لوك؟",
+        opts: ["لا حق لهم في مساءلته", "تقديم شكاوى للقضاء فقط", "حق عزله واختيار شخص آخر يتولى مهمة الحكم", "اللجوء إلى التحكيم الدولي"],
+        ans: 2
+    },
+    {
+        q: "ما الثورة التي دافع عنها لوك واعتمد عليها في بناء آرائه؟",
+        opts: ["الثورة الفرنسية عام 1789", "ثورة 1688 في انكلترا", "الثورة الأمريكية عام 1776", "ثورة 1848 الأوروبية"],
+        ans: 1
+    },
+    {
+        q: "ما السبب الذي جعل الشعب يعزل الملك جيمس الثاني وفق رؤية لوك؟",
+        opts: ["لأنه أثرى على حساب الشعب", "لأنه أخل بشروط العقد ومن حق الشعب عزله", "لأنه أعلن الحرب على فرنسا", "لأنه رفض إصدار دستور"],
+        ans: 1
+    },
+    {
+        q: "كيف وصف الكتاب موقف لوك السياسي؟",
+        opts: ["أنه من أنصار الحكم المطلق", "أنه من المؤيدين للطغيان", "أنه من أنصار الحكم المقيد وليس المطلق", "أنه من أنصار الجمهورية"],
+        ans: 2
+    },
+    {
+        q: "ما وصف روسو لحال الإنسان قبل قيام الدولة؟",
+        opts: ["حياة فوضوية ومليئة بالعنف", "كان يتمتع بحرية كاملة واستقلال تام", "خضوع لسلطة قبلية قاسية", "عيش في مجتمع متحضر منظم"],
+        ans: 1
+    },
+    {
+        q: "لماذا تخلى الإنسان عن حاله الأولى واتفق مع الآخرين وفق روسو؟",
+        opts: ["بسبب الحروب الخارجية", "بسبب تعدد المصالح وتعارضها وظهور ميول شريرة ورغبة التملك والسيطرة", "بسبب الكوارث الطبيعية", "بسبب رغبة الحكام في إقامة دولة"],
+        ans: 1
+    },
+    {
+        q: "ما الذي أطلق عليه روسو مصطلح 'الإرادة العامة'؟",
+        opts: ["سلطة الحاكم المطلقة", "قرارات البرلمان", "الهيئة العامة التي يتنازل لها الأفراد عن حقوقهم وتشمل جميعهم", "مجلس الشورى الديني"],
+        ans: 2
+    },
+    {
+        q: "ما الجانب الأول لأطراف العقد عند روسو؟",
+        opts: ["الحاكم الفرد", "الشخص الجماعي المستقل الذي يتكون من مجموع أفراد الجماعة", "مجلس الشيوخ المنتخب", "الجيش الوطني"],
+        ans: 1
+    },
+    {
+        q: "ما الجانب الثاني لأطراف العقد عند روسو؟",
+        opts: ["الحاكم وحده", "الجماعة كوحدة واحدة", "كل فرد من أفراد الجماعة بصفته الشخصية", "المجلس التشريعي"],
+        ans: 2
+    },
+    {
+        q: "ما مكانة الحاكم وفق نظرية روسو؟",
+        opts: ["طرف في العقد وسلطته مطلقة", "فوق القانون والمساءلة", "وكيل عن الأفراد يباشر السلطة نيابة عنهم", "ممثل الإرادة الإلهية"],
+        ans: 2
+    },
+    {
+        q: "وفق روسو، ما وصف الحكومة في علاقتها بالشعب؟",
+        opts: ["هيئة مستقلة عن الشعب", "وكيل عن الشعب مكلف بتنفيذ القوانين والمحافظة على الحرية", "سلطة فوق سيادة الشعب", "جهة دينية مقدسة"],
+        ans: 1
+    },
+    {
+        q: "متى يحق للأفراد عزل الحاكم وفق روسو؟",
+        opts: ["بعد انتهاء فترته المحددة فقط", "عند الأزمات الاقتصادية فقط", "متى أرادوا ذلك", "لا يحق لهم عزله أبداً"],
+        ans: 2
+    },
+    {
+        q: "ما الانتقاد الجوهري الموجه لنظرية العقد الاجتماعي؟",
+        opts: ["أنها تدعم الاستبداد وتبرره", "أنها قائمة على الخيال وبعيدة عن الواقع إذ يصعب تحقق اتفاق جميع الأفراد", "أنها تلغي دور الحكومة بالكامل", "أنها تؤدي حتماً إلى الفوضى"],
+        ans: 1
+    },
+    {
+        q: "ما أهم مساهمات نظرية العقد الاجتماعي في تاريخ الفكر السياسي؟",
+        opts: ["تعزيز الحكم المطلق وتثبيته", "نشر الوعي ضد الاستبداد وتسليط الضوء على دور الشعوب في إقامة السلطة ومراقبتها", "إلغاء المؤسسات السياسية", "تعزيز سلطة الكنيسة"],
+        ans: 1
+    },
+    {
+        q: "ما المبدأ الدستوري المهم الذي يُعدّ من أبرز إسهامات نظرية روسو؟",
+        opts: ["مبدأ سيادة الملك المطلق", "مبدأ سيادة الأمة", "مبدأ سيادة الكنيسة على الدولة", "مبدأ سيادة الجيش"],
+        ans: 1
+    },
+    {
+        q: "ما تأثير طروحات روسو على رجال الثورة الفرنسية؟",
+        opts: ["لم يكن لها تأثير يُذكر", "رفضها رجال الثورة الفرنسية", "أثّرت في رجال الثورة الفرنسية وما وضعوه من قواعد دستورية", "أثّرت سلباً على الثورة الفرنسية"],
+        ans: 2
+    },
+
+    // ======= المبحث الثالث: نظرية القوة =======
+    {
+        q: "وفق نظرية القوة، كيف نشأت الدولة؟",
+        opts: ["بالتراضي والاتفاق الحر", "بإرادة إلهية", "عن طريق القوة والعنف بفرض نظام اجتماعي على الآخرين", "بتطور طبيعي تدريجي هادئ"],
+        ans: 2
+    },
+    {
+        q: "ما مدى صحة نظرية القوة بحسب الكتاب؟",
+        opts: ["لا صحة لها على الإطلاق", "كانت تنطوي على قدر كبير من الصحة", "صحيحة تماماً وشاملة", "صحيحة في العالم القديم فقط"],
+        ans: 1
+    },
+    {
+        q: "لماذا لا يمكن الاعتماد على نظرية القوة لتفسير نشأة جميع الدول؟",
+        opts: ["لأنها مبالغة في التبسيط فقط", "لأن ليس جميع الدول قامت على أساس القوة وحدها", "لأنها قديمة الزمان", "لأنها مثيرة للجدل"],
+        ans: 1
+    },
+    {
+        q: "ما العامل الذي سينضاف لعامل القوة في استمرار السلطة وفق الكتاب؟",
+        opts: ["المال والثروة", "عامل رضا المحكومين في مرحلة لاحقة", "قوة الجيش", "الشرعية الدينية"],
+        ans: 1
+    },
+    {
+        q: "من الفقيه الفرنسي المشهور المؤيد لنظرية القوة؟",
+        opts: ["مونتسكيو", "جان جاك روسو", "ليون ديجي", "جون لوك"],
+        ans: 2
+    },
+    {
+        q: "ما رأي ديجي في طبيعة الدولة القانونية؟",
+        opts: ["أنها ظاهرة إلهية مقدسة", "أنها ماهي إلا حدث اجتماعي وليس لها أي سند قانوني", "أنها نتاج عقد اجتماعي", "أنها تطور طبيعي للأسرة"],
+        ans: 1
+    },
+    {
+        q: "إلى كم طبقة تنقسم الناس في المجتمع وفق رأي ديجي؟",
+        opts: ["طبقة واحدة متجانسة", "ثلاث طبقات", "طبقتان: حاكمة وأخرى محكومة", "أربع طبقات متفاوتة"],
+        ans: 2
+    },
+    {
+        q: "ما الذي تتميز به الطبقة الحاكمة ويُمكّنها من الحكم وفق ديجي؟",
+        opts: ["الثروة والمال وحدهما", "قوة أكثر أفراد الجماعة سواء كانت قوة مادية أم دينية أم سياسية أم أدبية", "العلم والمعرفة وحدهما", "النسب والأصل الشريف"],
+        ans: 1
+    },
+    {
+        q: "ما الذي تُصدره الطبقة الحاكمة للمحكومين وفق ديجي؟",
+        opts: ["إعلانات الحرب فقط", "أوامر وتُلزم المحكومين بتنفيذها بالقوة المادية", "قوانين بموافقة الشعب", "توجيهات دينية"],
+        ans: 1
+    },
+
+    // ======= المبحث الرابع: نظرية الأسرة =======
+    {
+        q: "وفق نظرية الأسرة، ما الذي يُعد أساساً لنشأة الدولة؟",
+        opts: ["العقد الاجتماعي", "الأسرة التي هي النواة الأولى", "القوة العسكرية", "الإرادة الإلهية"],
+        ans: 1
+    },
+    {
+        q: "ما التسلسل التطوري الصحيح لنشأة الدولة وفق نظرية الأسرة؟",
+        opts: ["أسرة ← مدينة ← قبيلة ← دولة", "قبيلة ← أسرة ← مدينة ← دولة", "أسرة ← عشيرة ← قبيلة ← قرى ← مدينة ← دولة", "مدينة ← قبيلة ← عشيرة ← دولة"],
+        ans: 2
+    },
+    {
+        q: "ما رأي الفيلسوف أرسطو في نشأة الدولة وفق الكتاب؟",
+        opts: ["أن الدولة نشأت بالقوة والعنف", "أن الدولة نظام طبيعي ينمو طبقاً لسنة التطور والارتقاء", "أن الدولة نشأت بعقد اجتماعي", "أن الدولة من خلق الله مباشرة"],
+        ans: 1
+    },
+    {
+        q: "ما الذي ينتج عن تجمع عدد من العائلات وفق نظرية الأسرة؟",
+        opts: ["الدولة مباشرة", "المدينة مباشرة", "العشيرة", "البرلمان"],
+        ans: 2
+    },
+    {
+        q: "ما الانتقاد الرئيسي الموجه لنظرية الأسرة في افتراضها عن أصل المجتمع؟",
+        opts: ["أنها لا تفسر قيام الحروب", "افتراض أن الأسرة هي الخلية الأولى للمجتمع وهو غير صحيح", "أنها معقدة جداً ويصعب فهمها", "أنها لا تصلح للمجتمعات الحديثة"],
+        ans: 1
+    },
+    {
+        q: "لماذا يُعدّ افتراض أن الأسرة هي الخلية الأولى للمجتمع غير صحيح تاريخياً؟",
+        opts: ["لأن القبيلة سبقت الأسرة في التطور", "لأن الأفراد كانوا يعيشون حياة مشاعية قبل ظهور الأسرة", "لأن المدينة سبقت الأسرة", "لأن الحروب سبقت ظهور الأسرة"],
+        ans: 1
+    },
+    {
+        q: "ما الانتقاد المتعلق بتشبيه السلطة السياسية للدولة بسلطة رب الأسرة في نظرية الأسرة؟",
+        opts: ["التشبيه صحيح تماماً ودقيق", "خاطئ لأن سلطة الأسرة شخصية تنتهي بصاحبها أما الدولة فسلطتها مجردة دائمة لا تنقطع", "التشبيه صحيح من الناحية القانونية فقط", "سلطة الدولة أضعف من سلطة الأسرة"],
+        ans: 1
+    },
+    {
+        q: "ما المثال التاريخي الذي يُفنّد نظرية الأسرة الذي ذكره الكتاب؟",
+        opts: ["الدولة الأمريكية الحديثة", "الدولة المصرية القديمة التي قامت بنظام المدينة لا من خلال تطور الأسرة", "الدولة الصينية القديمة", "الدولة الرومانية"],
+        ans: 1
+    },
+
+    // ======= المبحث الخامس: نظرية التطور التاريخي =======
+    {
+        q: "وفق نظرية التطور التاريخي، هل يمكن رجوع نشأة الدولة لعامل واحد فقط؟",
+        opts: ["نعم، القوة هي العامل الوحيد", "نعم، العقد الاجتماعي هو الأساس الوحيد", "لا، نشأة الدولة تعود لتطورات اجتماعية وعوامل مختلفة لا لعامل واحد", "نعم، الدين هو الأساس الوحيد"],
+        ans: 2
+    },
+    {
+        q: "ما أبرز العوامل التي أدت إلى قيام الدولة وفق نظرية التطور التاريخي؟",
+        opts: ["القانون والسياسة فقط", "الثقافة والحضارة فقط", "الدين والقوة والاقتصاد والميل الغريزي للإنسان للعيش مع ابناء جنسه", "الحروب والكوارث الطبيعية فقط"],
+        ans: 2
+    },
+    {
+        q: "ما تقدير معظم الفقهاء لنظرية التطور التاريخي مقارنةً بالنظريات الأخرى؟",
+        opts: ["رفضها معظم الفقهاء", "تعد الأقرب إلى الصواب في تفسير نشأة الدولة واستحسنها معظم الفقهاء", "قبولها بعض الفقهاء فقط", "تعد من أضعف نظريات نشأة الدولة"],
+        ans: 1
+    },
+    {
+        q: "ما الذي أكدته نظرية التطور التاريخي بشأن اختلاف الدول في نشأتها؟",
+        opts: ["جميع الدول نشأت بطريقة واحدة", "نشأة الدولة تختلف من بلد لآخر حسب ظروفها التاريخية والاجتماعية والاقتصادية", "كل الدول نشأت بالعقد الاجتماعي", "كل الدول نشأت بالقوة العسكرية"],
+        ans: 1
+    },
+    {
+        q: "لماذا حاولت نظرية التطور التاريخي التوفيق بين النظريات السابقة؟",
+        opts: ["لأنها لا تملك نظرية مستقلة", "لأن أساس نشأة الدولة لا يُرجع لعامل واحد بل لتعدد العوامل وتفاعلها", "لأن النظريات السابقة كانت خاطئة كلياً", "لأن الفقهاء رفضوا النظريات السابقة"],
+        ans: 1
+    },
+
+    // ======= أسئلة مقارنة وتحليل =======
+    {
+        q: "ما الفرق الجوهري بين موقف هوبز ولوك من سلطة الحاكم؟",
+        opts: ["لا فرق بينهما", "هوبز يرى السلطة مطلقة ولوك يرى أنها مقيدة يمكن للشعب إنهاؤها", "لوك يرى السلطة مطلقة وهوبز يرى أنها مقيدة", "كلاهما يؤيد الحكم الجمهوري"],
+        ans: 1
+    },
+    {
+        q: "من بين رواد العقد الاجتماعي الثلاثة، من كان يرى أن الإنسان قبل الدولة يعيش حياة فوضوية وصعبة؟",
+        opts: ["روسو وحده", "لوك وروسو", "هوبز وحده", "الثلاثة معاً"],
+        ans: 2
+    },
+    {
+        q: "من بين رواد العقد الاجتماعي، من كان يرى أن الإنسان قبل الدولة يعيش حياة حرة سعيدة ويتمتع بحقوق طبيعية كاملة؟",
+        opts: ["هوبز فقط", "هوبز ولوك معاً", "روسو فقط", "لوك وروسو معاً"],
+        ans: 3
+    },
+    {
+        q: "ما النظرية التي يرى أصحابها أن اختلاف الكتّاب في أساس نشأة الدولة يرجع لتباين ثقافاتهم السياسية والاجتماعية؟",
+        opts: ["نظرية القوة", "نظرية الأسرة", "نظرية التطور التاريخي", "نظرية العقد الاجتماعي"],
+        ans: 2
+    },
+    {
+        q: "ما عنوان الفصل الأول من كتاب د. حميد حنون في مبادئ القانون الدستوري؟",
+        opts: ["أركان الدولة", "أصل الدولة", "سيادة الدولة", "وظائف الدولة"],
+        ans: 1
+    },
+    {
+        q: "كم مبحثاً يتضمن الفصل الأول من كتاب مبادئ القانون الدستوري؟",
+        opts: ["ثلاثة مباحث", "أربعة مباحث", "خمسة مباحث", "ستة مباحث"],
+        ans: 2
+    }
+];
+
+// Shuffle options for each question while tracking correct answer
+function shuffleQuestions(arr) {
+    return arr.map(q => {
+        const correctText = q.opts[q.ans];
+        const shuffled = [...q.opts].sort(() => Math.random() - 0.5);
+        return {
+            q: q.q,
+            opts: shuffled,
+            ans: shuffled.indexOf(correctText)
+        };
+    }).sort(() => Math.random() - 0.5);
+}
+
+let quizData = shuffleQuestions(questions);
+let current = 0;
+let score = 0;
+let answered = false;
+
+function displayQuestion() {
+    const q = quizData[current];
+    const total = quizData.length;
+
+    document.getElementById('status').textContent = `سؤال ${current + 1} من ${total}`;
+    document.getElementById('progress-fill').style.width = `${((current) / total) * 100}%`;
+
+    const qEl = document.getElementById('question');
+    qEl.innerHTML = `<span class="q-number">س${current + 1}</span><br>${q.q}`;
+
+    const optionsEl = document.getElementById('options');
+    optionsEl.innerHTML = '';
+
+    q.opts.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="option-label">${LABELS[i]}</span>${opt}`;
+        btn.onclick = () => selectAnswer(i);
+        optionsEl.appendChild(btn);
+    });
+
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    answered = false;
+}
+
+function selectAnswer(idx) {
+    if (answered) return;
+    answered = true;
+
+    const q = quizData[current];
+    const btns = document.querySelectorAll('.option-btn');
+    btns.forEach(b => b.disabled = true);
+
+    const fb = document.getElementById('feedback');
+
+    if (idx === q.ans) {
+        btns[idx].classList.add('correct');
+        score++;
+        fb.className = 'correct-fb';
+        fb.textContent = '✅ إجابة صحيحة!';
+        document.getElementById('score-badge').textContent = `✅ ${score} صح`;
+    } else {
+        btns[idx].classList.add('wrong');
+        btns[q.ans].classList.add('correct');
+        fb.className = 'wrong-fb';
+        fb.textContent = `❌ خطأ! الإجابة الصحيحة: ${q.opts[q.ans]}`;
+    }
+
+    fb.style.display = 'block';
+
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = current + 1 < quizData.length ? 'التالي ←' : '🏆 إنهاء الاختبار';
+}
+
+function nextQuestion() {
+    current++;
+    if (current < quizData.length) {
+        displayQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById('q-number') && null;
+    document.getElementById('question').style.display = 'none';
+    document.getElementById('options').style.display = 'none';
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('status').style.display = 'none';
+    document.querySelector('.progress-bar-wrap').style.display = 'none';
+    document.querySelector('.score-badge').style.display = 'none';
+
+    const total = quizData.length;
+    const pct = Math.round((score / total) * 100);
+
+    document.getElementById('result-pct').textContent = pct + '%';
+    document.getElementById('result-sub').textContent = `أجبت على ${score} سؤالاً صحيحاً من ${total}`;
+    document.getElementById('result-circle').style.setProperty('--pct', `${pct}%`);
+
+    const gradeEl = document.getElementById('result-grade');
+    if (pct >= 90) {
+        gradeEl.textContent = '🏆 ممتاز';
+        gradeEl.className = 'result-grade grade-excellent';
+    } else if (pct >= 75) {
+        gradeEl.textContent = '⭐ جيد جداً';
+        gradeEl.className = 'result-grade grade-good';
+    } else if (pct >= 60) {
+        gradeEl.textContent = '✅ جيد';
+        gradeEl.className = 'result-grade grade-pass';
+    } else {
+        gradeEl.textContent = '📚 تحتاج مراجعة';
+        gradeEl.className = 'result-grade grade-fail';
+    }
+
+    document.getElementById('result-screen').style.display = 'block';
+}
+
+function restartQuiz() {
+    quizData = shuffleQuestions(questions);
+    current = 0;
+    score = 0;
+    answered = false;
+
+    document.getElementById('question').style.display = 'block';
+    document.getElementById('options').style.display = 'flex';
+    document.getElementById('status').style.display = 'block';
+    document.querySelector('.progress-bar-wrap').style.display = 'block';
+    document.querySelector('.score-badge').style.display = 'block';
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('score-badge').textContent = '✅ 0 صح';
+
+    displayQuestion();
+}
+
+// Init
+displayQuestion();
+</script>
+
+</body>
+</html>

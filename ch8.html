@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الباب الثالث / الفصل الثاني – دساتير العراق في ظل النظام الجمهوري</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0f172a; --card: #1e293b; --border: #334155;
+            --gold: #c29d5f; --gold-dim: #9a7a47;
+            --green: #10b981; --red: #ef4444;
+            --text: #e2e8f0; --muted: #94a3b8; --radius: 16px;
+        }
+        body { background:var(--bg); font-family:'Cairo','Segoe UI',Tahoma,Arial,sans-serif; color:var(--text); min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:24px 16px 48px; }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:0 25px 60px rgba(0,0,0,.55),0 0 0 1px rgba(194,157,95,.08); width:100%; max-width:780px; padding:36px 36px 28px; position:relative; overflow:hidden; }
+        .card::before { content:''; position:absolute; top:0;left:0;right:0; height:4px; background:linear-gradient(90deg,var(--gold),#e8c97a,var(--gold)); }
+        h1 { color:var(--gold); font-size:1.45rem; font-weight:900; text-align:center; margin-bottom:6px; }
+        .subtitle { text-align:center; font-size:.85rem; color:var(--muted); margin-bottom:22px; }
+        .progress-wrap { background:#0f172a; border-radius:999px; height:7px; margin-bottom:8px; overflow:hidden; }
+        .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold-dim),var(--gold)); border-radius:999px; transition:width .4s ease; }
+        #status { text-align:center; font-size:.82rem; color:var(--muted); margin-bottom:22px; }
+        .score-row { display:flex; justify-content:center; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+        .chip { display:flex; align-items:center; gap:6px; background:#0f172a; border:1px solid var(--border); border-radius:999px; padding:5px 14px; font-size:.82rem; }
+        .chip-dot { width:10px; height:10px; border-radius:50%; }
+        .chip-dot.g { background:var(--green); } .chip-dot.r { background:var(--red); }
+        .q-num { display:inline-block; background:var(--gold); color:#0f172a; font-weight:900; font-size:.78rem; padding:3px 10px; border-radius:6px; margin-bottom:10px; }
+        .q-text { font-size:1.05rem; font-weight:700; line-height:1.75; color:var(--text); margin-bottom:22px; background:rgba(255,255,255,.03); border-right:3px solid var(--gold); padding:12px 16px; border-radius:0 8px 8px 0; }
+        #options { display:flex; flex-direction:column; gap:11px; margin-bottom:22px; }
+        .opt-btn { background:#0f172a; border:1.5px solid var(--border); border-radius:10px; color:var(--text); cursor:pointer; font-family:inherit; font-size:.95rem; font-weight:600; padding:13px 18px; text-align:right; transition:all .22s ease; display:flex; align-items:center; gap:10px; }
+        .opt-btn:hover:not(:disabled) { border-color:var(--gold); background:rgba(194,157,95,.08); transform:translateX(-3px); }
+        .opt-btn .opt-label { background:var(--border); color:var(--gold); border-radius:6px; font-size:.78rem; font-weight:900; padding:2px 8px; flex-shrink:0; }
+        .opt-btn.correct { background:rgba(16,185,129,.12); border-color:var(--green); color:var(--green); }
+        .opt-btn.correct .opt-label { background:var(--green); color:#fff; }
+        .opt-btn.wrong { background:rgba(239,68,68,.1); border-color:var(--red); color:var(--red); }
+        .opt-btn.wrong .opt-label { background:var(--red); color:#fff; }
+        .opt-btn:disabled { cursor:default; transform:none; }
+        #feedback { min-height:28px; font-size:.9rem; font-weight:700; text-align:center; margin-bottom:16px; border-radius:8px; padding:8px 12px; display:none; }
+        #feedback.show { display:block; }
+        #feedback.ok  { background:rgba(16,185,129,.12); color:var(--green); }
+        #feedback.err { background:rgba(239,68,68,.1); color:var(--red); }
+        #next-btn { width:100%; background:linear-gradient(135deg,var(--gold-dim),var(--gold)); border:none; border-radius:10px; color:#0f172a; cursor:pointer; font-family:inherit; font-size:1rem; font-weight:900; padding:14px; transition:opacity .2s,transform .2s; margin-bottom:20px; display:none; }
+        #next-btn:hover { opacity:.88; transform:translateY(-1px); }
+        .footer-nav { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:18px; }
+        .nav-btn { display:inline-flex; align-items:center; gap:7px; background:#0f172a; border:1.5px solid var(--border); border-radius:10px; color:var(--text); cursor:pointer; font-family:inherit; font-size:.88rem; font-weight:700; padding:9px 18px; text-decoration:none; transition:border-color .2s,background .2s; }
+        .nav-btn:hover { border-color:var(--gold); background:rgba(194,157,95,.08); }
+        .nav-btn.tg { border-color:#229ED9; color:#229ED9; }
+        .nav-btn.tg:hover { background:rgba(34,158,217,.08); }
+        #result-screen { display:none; text-align:center; padding:20px 0; }
+        .trophy { font-size:5rem; margin-bottom:14px; animation:pop .5s ease; }
+        @keyframes pop { 0%{transform:scale(0)} 70%{transform:scale(1.15)} 100%{transform:scale(1)} }
+        .result-title { font-size:1.6rem; font-weight:900; color:var(--gold); margin-bottom:8px; }
+        .result-score { font-size:3.5rem; font-weight:900; background:linear-gradient(135deg,var(--gold-dim),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px; }
+        .result-msg { color:var(--muted); font-size:1rem; margin-bottom:24px; }
+        .result-bars { display:flex; justify-content:center; gap:24px; margin-bottom:28px; flex-wrap:wrap; }
+        .rbar { background:#0f172a; border:1px solid var(--border); border-radius:12px; padding:14px 22px; }
+        .rbar-val { font-size:1.5rem; font-weight:900; }
+        .rbar-val.g { color:var(--green); } .rbar-val.r { color:var(--red); }
+        .rbar-lbl { font-size:.8rem; color:var(--muted); }
+        .restart-btn { background:linear-gradient(135deg,var(--gold-dim),var(--gold)); border:none; border-radius:10px; color:#0f172a; cursor:pointer; font-family:inherit; font-size:1rem; font-weight:900; padding:13px 32px; transition:opacity .2s; }
+        .restart-btn:hover { opacity:.85; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div id="quiz-screen">
+        <h1>📋 الباب الثالث / الفصل الثاني – دساتير العراق في ظل النظام الجمهوري من 1958 حتى 2003</h1>
+        <p class="subtitle">د. حميد حنون | مبادئ القانون الدستوري وتطور النظام السياسي في العراق</p>
+        <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+        <div id="status"></div>
+        <div class="score-row">
+            <div class="chip"><div class="chip-dot g"></div><span id="correct-count">0</span> صحيح</div>
+            <div class="chip"><div class="chip-dot r"></div><span id="wrong-count">0</span> خطأ</div>
+        </div>
+        <div class="q-num" id="q-num"></div>
+        <div class="q-text" id="question"></div>
+        <div id="options"></div>
+        <div id="feedback"></div>
+        <button id="next-btn">السؤال التالي ◄</button>
+        <div class="footer-nav">
+            <a href="index.html" class="nav-btn">🏠 الرجوع للقائمة الرئيسية</a>
+            <a href="https://t.me/M5M5P" class="nav-btn tg" target="_blank">📢 قناة التليجرام</a>
+        </div>
+    </div>
+    <div id="result-screen">
+        <div class="trophy" id="trophy">🏆</div>
+        <div class="result-title">انتهى الاختبار!</div>
+        <div class="result-score" id="result-score"></div>
+        <div class="result-msg" id="result-msg"></div>
+        <div class="result-bars">
+            <div class="rbar"><div class="rbar-val g" id="r-correct">0</div><div class="rbar-lbl">إجابة صحيحة</div></div>
+            <div class="rbar"><div class="rbar-val r" id="r-wrong">0</div><div class="rbar-lbl">إجابة خاطئة</div></div>
+            <div class="rbar"><div class="rbar-val" id="r-pct" style="color:var(--gold)">0%</div><div class="rbar-lbl">النسبة المئوية</div></div>
+        </div>
+        <button class="restart-btn" onclick="restartQuiz()">🔄 إعادة الاختبار</button>
+        <div class="footer-nav" style="margin-top:24px">
+            <a href="index.html" class="nav-btn">🏠 الرجوع للقائمة الرئيسية</a>
+            <a href="https://t.me/M5M5P" class="nav-btn tg" target="_blank">📢 قناة التليجرام</a>
+        </div>
+    </div>
+</div>
+
+<script>
+const allQuestions = [
+
+/* ══ المبحث الأول: دستور 1958 ══ */
+{q:"متى استولت مجموعة من الضباط على السلطة وأسقطت النظام الملكي في العراق؟",
+ opts:["الأول من آب 1958","العاشر من تموز 1958","الرابع عشر من تموز 1958","الثامن من شباط 1958"],ans:2},
+
+{q:"متى صدر الدستور المؤقت الجديد بعد ثورة 14 تموز 1958؟",
+ opts:["14 تموز 1958","20 تموز 1958","27 تموز 1958","1 آب 1958"],ans:2},
+
+{q:"منذ أيّ تاريخ أعلن دستور 1958 عن سقوط القانون الأساسي العراقي وتعديلاته كافة؟",
+ opts:["1 تموز 1958","14 تموز 1958","27 تموز 1958","1 آب 1958"],ans:1},
+
+{q:"كم مادة احتوى عليها دستور 1958؟",
+ opts:["عشرون مادة","خمس وعشرون مادة","ثلاثون مادة","خمس وثلاثون مادة"],ans:2},
+
+{q:"على كم باب تُوزِّعت مواد دستور 1958؟",
+ opts:["بابان","ثلاثة أبواب","أربعة أبواب","خمسة أبواب"],ans:2},
+
+{q:"ما عنوان الباب الأول من دستور 1958؟",
+ opts:["مصدر السلطات والحقوق والواجبات العامة","نظام الحكم","الجمهورية العراقية","أحكام انتقالية"],ans:2},
+
+{q:"ما المواد التي تضمّنها الباب الثاني من دستور 1958 (مصدر السلطات والحقوق والواجبات العامة)؟",
+ opts:["م 1 - 6","م 7 - 19","م 20 - 26","م 27 - 30"],ans:1},
+
+{q:"ما المواد التي تضمّنها الباب الثالث (نظام الحكم) في دستور 1958؟",
+ opts:["م 7 - 19","م 14 - 22","م 20 - 26","م 25 - 30"],ans:2},
+
+{q:"ما الباب الرابع من دستور 1958؟",
+ opts:["نظام الحكم","السلطة القضائية","الحقوق والواجبات","أحكام انتقالية"],ans:3},
+
+{q:"من وقّع بيان ولادة دستور 1958 الذي أعلن عن صدوره؟",
+ opts:["مجلس السيادة","رئيس الجمهورية فقط","رئيس الوزراء","أعضاء المجلس التأسيسي"],ans:2},
+
+{q:"من وقّع الوثيقة الدستورية لدستور 1958 ذاتها؟",
+ opts:["رئيس الوزراء وحده","أعضاء مجلس السيادة إضافةً إلى رئيس الوزراء والوزراء","القيادة العسكرية","مجلس الأمن القومي"],ans:1},
+
+{q:"لماذا لا يمكن تصنيف دستور 1958 ضمن الأساليب التقليدية لإقامة الدساتير؟",
+ opts:["لأنه صدر بالاستفتاء الشعبي","لأن الحكومة التي أقامته هي حكومة فعلية استولت على السلطة بالقوة دون سند من القانون","لأنه صدر بموجب مرسوم ملكي","لأنه وُضع بمعاونة أجنبية"],ans:1},
+
+{q:"ما الخاصية الأولى لدستور 1958 من حيث حجمه؟",
+ opts:["دستور مطوّل يحتوي على مئة مادة","دستور موجز يحتوي على ثلاثين مادة موزعة على أربعة أبواب","دستور متوسط الحجم","دستور مفصّل يعالج كل الحقوق"],ans:1},
+
+{q:"ما النظام السياسي الذي أخذ به دستور 1958 وفق بابه الأول؟",
+ opts:["النظام الملكي الدستوري","النظام الجمهوري","النظام الاتحادي","نظام شبه رئاسي"],ans:1},
+
+{q:"ما الذي نصت عليه المادة السابعة من دستور 1958 بشأن مصدر السلطات؟",
+ opts:["السلطة تعود للملك","الشعب هو مصدر السلطات","الجيش هو مصدر السلطات","مجلس الوزراء هو مصدر السلطات"],ans:1},
+
+{q:"ما الذي أكّدت عليه المادة الثانية من دستور 1958 بشأن هوية العراق؟",
+ opts:["العراق دولة مستقلة ذات سيادة كاملة لا علاقة لها بالعروبة","العراق جزء من الأمة العربية","العراق دولة إسلامية بالدرجة الأولى","العراق دولة متعددة الأعراق"],ans:1},
+
+{q:"ما هيئتا الحكم اللتان أوجدهما دستور 1958؟",
+ opts:["مجلس النواب ومجلس الأعيان","المجلس الوطني لقيادة الثورة ورئيس الجمهورية","مجلس السيادة ومجلس الوزراء","مجلس الشعب ومجلس الوزراء"],ans:2},
+
+{q:"من كم عضو يتكون مجلس السيادة في دستور 1958؟",
+ opts:["عضو واحد هو الرئيس","رئيس وعضو واحد","رئيس وعضوان","رئيس وثلاثة أعضاء"],ans:2},
+
+{q:"ما صلاحيات مجلس السيادة وفق المادة 21 من دستور 1958؟",
+ opts:["يملك السلطة التشريعية كاملةً","تنحصر في التصديق على القوانين التي يقرّها مجلس الوزراء","يُشرف على القضاء وتعيين القضاة","يضع السياسة الخارجية ويُقرّ المعاهدات"],ans:1},
+
+{q:"من هو الحاكم الفعلي في ظل دستور 1958؟",
+ opts:["مجلس السيادة","رئيس الجمهورية","مجلس الوزراء","قائد الجيش"],ans:2},
+
+{q:"ما الذي يميز مجلس الوزراء في ظل دستور 1958 من الناحية الدستورية؟",
+ opts:["خاضع لرقابة مجلس السيادة الكاملة","كان يباشر السلطتين التشريعية والتنفيذية ولا توجد أي قيود دستورية تحد من استخدامه لتلك السلطات","خاضع لرقابة المحكمة العليا","مسؤول أمام الشعب مباشرةً عبر الاستفتاء"],ans:1},
+
+{q:"ما المشكلة الدستورية التي أشار إليها الكتاب بشأن مجلس السيادة في دستور 1958؟",
+ opts:["لم يحدد عدد أعضائه","لم يُحدد الدستور طريقة تعيين أعضائه ولا الشروط التي يجب أن تتوفر فيهم","لم يُخصص له راتب","لم يُحدد الدستور مدة ولايته"],ans:1},
+
+/* ══ المبحث الثاني: دستور 4 نيسان 1963 ══ */
+{q:"متى أسقط نظام الحكم الذي أسّس وفقاً لدستور 1958؟",
+ opts:["14 رمضان 1963","الثامن من شباط 1963","الرابع من نيسان 1963","الثامن عشر من تشرين الثاني 1963"],ans:1},
+
+{q:"ما القانون الذي صدر في الرابع من نيسان 1963 بعد انقلاب شباط؟",
+ opts:["قانون الجمهورية رقم 1","قانون المجلس الوطني لقيادة الثورة رقم 25 لسنة 1963","قانون إعلان الطوارئ","قانون حل البرلمان"],ans:1},
+
+{q:"كيف تعامل الحكام الجدد بعد انقلاب 8 شباط 1963 مع دستور 1958؟",
+ opts:["ألغوه فوراً وأعلنوا عن ذلك صراحةً","لم يُلغَ الدستور بشكل صريح وعلني بكامله، بل تم تعديل مؤسساته فعلياً بإنشاء المجلس الوطني لقيادة الثورة","أبقوا عليه بدون أي تغيير","أجروا استفتاءً شعبياً على إلغائه"],ans:1},
+
+{q:"ما المادة من قانون 4 نيسان 1963 التي نصّت على إلغاء دستور 1958 صراحةً؟",
+ opts:["المادة 50","المادة 75","المادة 103","المادة 110"],ans:2},
+
+{q:"كم مادة احتوى عليها قانون 4 نيسان 1963؟",
+ opts:["عشر مواد","خمس عشرة مادة","عشرون مادة","خمس وعشرون مادة"],ans:2},
+
+{q:"كم مادة من مواد قانون 4 نيسان 1963 اختصت بالمجلس الوطني لقيادة الثورة؟",
+ opts:["خمس مواد","عشر مواد","أربع عشرة مادة","عشرون مادة"],ans:2},
+
+{q:"من وضع قانون (دستور) 4 نيسان 1963؟",
+ opts:["جمعية تأسيسية منتخبة","مجلس الوزراء وحده","المجلس الوطني لقيادة الثورة","لجنة فقهاء القانون"],ans:2},
+
+{q:"ما الحد الأقصى لعدد أعضاء المجلس الوطني لقيادة الثورة في دستور 1963؟",
+ opts:["عشرة أعضاء","خمسة عشر عضواً","عشرون عضواً","خمسة وعشرون عضواً"],ans:2},
+
+{q:"ما الوصف الذي أطلقه قانون 4 نيسان 1963 على المجلس الوطني لقيادة الثورة؟",
+ opts:["هيئة استشارية","الجهاز الثوري القيادي الذي قاد جماهير الشعب والقوات المسلحة في الثامن من شباط 1963","الجهة التنفيذية العليا","الهيئة التشريعية المؤقتة"],ans:1},
+
+{q:"كيف كانت رئاسة المجلس الوطني لقيادة الثورة في دستور 1963؟",
+ opts:["رئيس معيّن بمرسوم دائم","رئيس دوري تنتخبه أعضاء المجلس لمدة شهرين","رئيس منتخب من الشعب","رئيس تعيّنه القوات المسلحة"],ans:1},
+
+{q:"ما الاختصاصات التشريعية للمجلس الوطني لقيادة الثورة في دستور 1963؟",
+ opts:["يملك حق المصادقة على القوانين فقط","يضع القوانين والأنظمة، وله سلطة التعديل والإلغاء، وسلطة اقرار المعاهدات والاتفاقيات وإعلان الحرب وقبول الصلح","يملك السلطة القضائية فقط","لا يملك أي صلاحية تشريعية"],ans:1},
+
+{q:"ما حق الاعتراض الذي أعطته المادة السادسة عشرة من دستور 1963 لرئيس الجمهورية؟",
+ opts:["اعتراض مطلق ونهائي","حق الاعتراض التوقيفي بإبداء رأيه للمجلس خلال أسبوع واحد ثم يعود للمجلس للتصويت","اعتراض استشاري فقط","حق النقض الكامل"],ans:1},
+
+{q:"ما الأكثرية المطلوبة لإقرار قرار المجلس قطعياً في حال اعترض رئيس الجمهورية على قانون في دستور 1963؟",
+ opts:["الأغلبية البسيطة","ثلاثة أرباع الأعضاء","الإجماع","أكثرية الثلثين"],ans:3},
+
+{q:"ما طبيعة اختصاصات رئيس الجمهورية في ظل دستور 4 نيسان 1963؟",
+ opts:["اختصاصات واسعة تشمل التشريع والتنفيذ","اختصاصات شكلية فقط لا تتجاوز التوقيع والتصديق","اختصاصات تنفيذية واسعة دون تشريعية","اختصاصات قضائية وإدارية"],ans:1},
+
+{q:"ما السبب الذي أدى إلى التناقض بين المجلس الوطني ورئيس الجمهورية في الواقع وفق الكتاب؟",
+ opts:["خلاف حول الميزانية العامة","محاولة رئيس الجمهورية الالتفاف على قيادة المجلس لبعض أعضائه بغية تأييده للاستيلاء على السلطة في الثامن عشر من تشرين الثاني 1963","خلاف حول السياسة الخارجية","خلاف حول تعيين القضاة"],ans:1},
+
+/* ══ المبحث الثالث: دستور 29 نيسان 1964 ══ */
+{q:"ما القانون الذي صدر في 22 نيسان 1964 قبل صدور دستور 1964؟",
+ opts:["قانون الانتخابات","قانون المجلس الوطني لقيادة الثورة الذي نصّ على آلية تشكيل المجلس واختصاصاته","قانون الإصلاح الزراعي","قانون حقوق الإنسان"],ans:1},
+
+{q:"ما الذي أفرغ المجلس الوطني من صلاحياته الفعلية قبل صدور دستور 1964؟",
+ opts:["قرار حله من قِبَل رئيس الجمهورية","المادة الثالثة عشرة من القانون 22 نيسان 1964 التي منحت صلاحيات المجلس إلى رئيس الجمهورية لمدة سنة تتجدد تلقائياً","خلاف داخلي بين الأعضاء","حكم قضائي بوقف نشاطه"],ans:1},
+
+{q:"متى أُلغي المجلس الوطني فعلياً بعد دستور 1964؟",
+ opts:["آذار 1964","حزيران 1964","8/9/1 عام 1965","كانون الثاني 1966"],ans:2},
+
+{q:"كم مادة احتوى دستور 29 نيسان 1964؟",
+ opts:["خمسون مادة","ثمانون مادة","مئة مادة","مئة وستة مواد"],ans:3},
+
+{q:"على كم باب تُوزِّعت مواد دستور 1964؟",
+ opts:["أربعة أبواب","خمسة أبواب","ستة أبواب","سبعة أبواب"],ans:2},
+
+{q:"ما عنوان الباب الأول من دستور 1964؟",
+ opts:["الحقوق والواجبات العامة","المقومات الأساسية للمجتمع","نظام الحكم","الدولة"],ans:3},
+
+{q:"ما الباب الرابع من دستور 1964 وما موضوعه؟",
+ opts:["الباب الرابع: نظام الحكم (م 40 - 93) على أربعة فصول","الباب الرابع: الحقوق والواجبات","الباب الرابع: الأحكام الانتقالية","الباب الرابع: السلطة القضائية"],ans:0},
+
+{q:"ما الدستور الأجنبي الذي تأثّر به دستور 1964 العراقي بشكل واضح؟",
+ opts:["الدستور الفرنسي 1958","الدستور الأمريكي 1787","دستور مصر 25 آذار 1964","الدستور السوفيتي 1936"],ans:2},
+
+{q:"من وضع مسودة دستور 1964؟",
+ opts:["جمعية تأسيسية منتخبة","لجنة حكومية برئاسة رئيس الجمهورية وعضوية عدد من الوزراء وموظفي رئاسة الجمهورية","المجلس الوطني لقيادة الثورة بالكامل","هيئة قانونية مستقلة"],ans:1},
+
+{q:"ما طبيعة دستور 1964 من حيث الدوام؟",
+ opts:["دستور دائم","دستور مرحلي","دستور مؤقت حُددت مدته الانتقالية بثلاث سنوات من تاريخ نفاذه","دستور لا يُحدد مدته"],ans:2},
+
+{q:"ما الذي نصت عليه المادة 104 من دستور 1964 بشأن دوامه؟",
+ opts:["الدستور دائم ونافذ إلى الأبد","نصّت على بقاء الدستور المؤقت نافذاً حتى يضعه مجلس الأمة الدائم أو قيام دولة الوحدة","الدستور يُلغى بعد خمس سنوات تلقائياً","الدستور يُعرض على الاستفتاء بعد ثلاث سنوات"],ans:1},
+
+{q:"ما الواقع الفعلي الذي حصل لدستور 1964 من حيث الدوام؟",
+ opts:["انتهت مدته الثلاث سنوات وعُمل بدستور جديد","ظل نافذاً حتى سقوط النظام في السابع عشر من تموز 1968 وصدور دستور 21 أيلول 1968","أُلغي بعد ستة أشهر من إقراره","وُضع دستور دائم في عام 1966"],ans:1},
+
+{q:"ما الذي نصّت عليه المادة الأولى من دستور 1964 بشأن النظام الديمقراطي؟",
+ opts:["العراق جمهورية رئاسية مستقلة","نصّت على مبدأ الديمقراطية الاشتراكية المستمدة من التراث العربي وروح الإسلام","العراق دولة اتحادية","الديمقراطية تعني حكم الحزب الواحد"],ans:1},
+
+{q:"ما الذي نصّت عليه المادة الثالثة من دستور 1964 بشأن الدين؟",
+ opts:["العراق دولة علمانية لا دين رسمي لها","الإسلام دين الدولة والقاعدة الأساسية لدستورها، والسلطة التشريعية لا تُشرّع ما يتعارض مع مبادئ الشريعة","الدين شأن خاص بالأفراد","حرية الأديان مكفولة دون تحديد دين رسمي"],ans:1},
+
+{q:"كيف يُصنَّف دستور 1964 من حيث المرونة والجمود؟",
+ opts:["دستور جامد","دستور شبه جامد","دستور مرن يتساوى تعديله مع تعديل القوانين العادية","دستور لا يقبل التعديل أبداً"],ans:2},
+
+{q:"ما شروط رئيس الدولة التي نصّت عليها المادة 41 من دستور 1964؟",
+ opts:["أن يكون عراقياً من أب عراقي فقط","السن لا يقل عن أربعين، عراقي من أبوين عراقيين، مسلم، متمتع بحقوقه المدنية، ممن قدموا خدمات مشهودة للوطن","السن لا يقل عن الثلاثين، عراقي الجنسية، مسلم","أن يكون ذا خبرة قانونية وعسكرية"],ans:1},
+
+{q:"كيف يُختار رئيس الدولة وفق دستور 1964؟",
+ opts:["انتخاب شعبي مباشر","انتخاب من قِبَل المجلس الوطني","لم ينص الدستور على طريقة اختياره، بل أشارت المادة 101 إلى استمرار الرئيس الحالي حتى ينتخب رئيس وفق الدستور الدائم","تعيينه من قِبَل مجلس الوزراء"],ans:2},
+
+{q:"ما الاختصاص الاستثنائي لرئيس الدولة في حالة الخطر العام وفق المادة 51 من دستور 1964؟",
+ opts:["يُعلن الأحكام العرفية بمفرده","يصدر قرارات لها قوة القانون بعد موافقة مجلس الوزراء، محاكياً المادة 16 من الدستور الفرنسي 1958","يحل البرلمان ويُعلن الانتخابات","يُوقف العمل بالدستور مؤقتاً"],ans:1},
+
+{q:"ما حق العفو الخاص الذي منحه دستور 1964 لرئيس الدولة؟",
+ opts:["لا يملك أي حق للعفو","يملك حق تخفيف أي عقوبة ورفعها بعفو خاص، ولا ينفذ حكم الإعدام إلا بتصديق منه وفق المادة 52","يملك العفو فقط عن المحكوم عليهم بالسجن","يملك العفو بعد موافقة البرلمان"],ans:1},
+
+{q:"من يدير أعمال الحكومة ويرأس مجلس الوزراء في دستور 1964؟",
+ opts:["رئيس الدولة مباشرةً","نائب رئيس الدولة","رئيس الوزراء وفق المادة 65","مجلس القيادة"],ans:2},
+
+{q:"ما الحد الأدنى لسن رئيس الوزراء والوزراء في دستور 1964؟",
+ opts:["خمسة وعشرون عاماً","الثلاثون عاماً","الخامسة والثلاثون عاماً","الأربعون عاماً"],ans:1},
+
+{q:"وفق الكتاب، من كان صاحب السلطة الفعلية في ظل دستور 1964؟",
+ opts:["المجلس الوطني لقيادة الثورة","رئيس الجمهورية ومجلس الوزراء معاً وليس المجلس الوطني الذي كان شكلياً وهامشياً","مجلس الوزراء وحده","رئيس الجمهورية وحده"],ans:1},
+
+{q:"ما رأي الكتاب في نص المادة 51 من دستور 1964 الخاصة بالاختصاص الاستثنائي لرئيس الدولة؟",
+ opts:["يُؤيده تماماً","لم يضع واضعوه قيوداً تحد من سلطة رئيس الجمهورية في مباشرة هذا الاختصاص، خلافاً للدستور الفرنسي","هو نص محكم وسليم دستورياً","لا رأي للكتاب في ذلك"],ans:1},
+
+{q:"ما الهيئتان المحوريتان في دستور 1963 (4 نيسان)؟",
+ opts:["رئيس الجمهورية ومجلس النواب","المجلس الوطني لقيادة الثورة ورئيس الجمهورية","مجلس الوزراء ومجلس السيادة","البرلمان والحكومة"],ans:1},
+
+{q:"ما الذي نصت عليه المادة الأولى من دستور 1964 بشأن علاقة العراق بالوحدة العربية؟",
+ opts:["العراق دولة مستقلة لا تسعى للوحدة","لا توجد نص على الوحدة في دستور 1964","العراق جزء من الأمة العربية والحكومة تلتزم بالعمل على تحقيق الوحدة العربية الشاملة مبتدئةً بالوحدة مع الجمهورية العربية المتحدة","العراق يرفض أي شكل من أشكال الوحدة"],ans:2},
+
+{q:"ما إجمالي الأبواب والمواد في الباب الرابع (نظام الحكم) من دستور 1964؟",
+ opts:["فصلان ومواد 30 - 50","أربعة فصول تضم مواد 40 - 93 تختص برئيس الدولة والسلطة التشريعية والتنفيذية والقضائية","ثلاثة فصول فقط","خمسة فصول تضم مواد 40 - 106"],ans:1},
+
+{q:"في دستور 1958 ما العلاقة بين مجلس السيادة ومجلس الوزراء من حيث السلطة الفعلية؟",
+ opts:["كانا متساويَين في السلطة","مجلس السيادة أقوى من مجلس الوزراء","مجلس الوزراء هو الحاكم الفعلي ومجلس السيادة دوره محدود بالتصديق الشكلي","لا يوجد فرق بينهما"],ans:2},
+
+{q:"ما التسمية الرسمية لقانون 4 نيسان 1963 وما أهميتها الدستورية؟",
+ opts:["قانون الثورة الدائمة وهو ليس دستوراً","سُمّي بـ'قانون المجلس الوطني لقيادة الثورة' في الوقت الذي يُبيّن فيه القانون اختصاصات المجلس الوطني الجمهورية ورئيس الجمهورية، وهذا يُعدّ دستوراً فعلياً مع تحفظات على التسمية","قانون عادي لا علاقة له بالدستور","قانون طوارئ مؤقت فقط"],ans:1}
+
+];
+
+/* ── State ── */
+let questions=[],current=0,correct=0,wrong=0,answered=false;
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }return arr;
+}
+
+function restartQuiz(){
+  current=0;correct=0;wrong=0;answered=false;
+  questions=shuffle([...allQuestions]);
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  const q=questions[current],total=questions.length;
+  document.getElementById('progress-fill').style.width=((current/total)*100)+'%';
+  document.getElementById('status').textContent=`سؤال ${current+1} من ${total}`;
+  document.getElementById('q-num').textContent=`س${current+1}`;
+  document.getElementById('question').textContent=q.q;
+  document.getElementById('correct-count').textContent=correct;
+  document.getElementById('wrong-count').textContent=wrong;
+  const fb=document.getElementById('feedback');fb.className='';fb.textContent='';
+  document.getElementById('next-btn').style.display='none';
+  const labels=['أ','ب','ج','د'],indices=[0,1,2,3];shuffle(indices);
+  const container=document.getElementById('options');container.innerHTML='';
+  indices.forEach((origIdx,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML=`<span class="opt-label">${labels[i]}</span>${q.opts[origIdx]}`;
+    btn.dataset.orig=origIdx;
+    btn.addEventListener('click',()=>handleAnswer(btn,origIdx,q.ans));
+    container.appendChild(btn);
+  });
+}
+
+function handleAnswer(clickedBtn,chosen,correct_orig){
+  if(answered)return;answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled=true;
+    if(parseInt(b.dataset.orig)===correct_orig)b.classList.add('correct');
+  });
+  const fb=document.getElementById('feedback');
+  if(chosen===correct_orig){
+    correct++;
+    clickedBtn.classList.add('correct');
+    fb.textContent='✅ إجابة صحيحة!';
+    fb.className='show ok';
+  } else {
+    wrong++;
+    clickedBtn.classList.add('wrong');
+    fb.textContent='❌ إجابة خاطئة! الجواب الصحيح محدد باللون الأخضر.';
+    fb.className='show err';
+  }
+  document.getElementById('correct-count').textContent=correct;
+  document.getElementById('wrong-count').textContent=wrong;
+  document.getElementById('next-btn').style.display='block';
+}
+
+document.getElementById('next-btn').addEventListener('click',()=>{
+  current++;
+  if(current>=questions.length)showResult();else showQuestion();
+});
+
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  const total=questions.length,pct=Math.round((correct/total)*100);
+  document.getElementById('result-score').textContent=`${correct} / ${total}`;
+  document.getElementById('r-correct').textContent=correct;
+  document.getElementById('r-wrong').textContent=wrong;
+  document.getElementById('r-pct').textContent=pct+'%';
+  let msg='',trophy='🏆';
+  if(pct>=90){msg='ممتاز! أداء رائع ومتميز 🌟';trophy='🥇';}
+  else if(pct>=75){msg='جيد جداً! مستوى متقدم 👏';trophy='🥈';}
+  else if(pct>=60){msg='جيد، راجع الفصل لتعزيز المعلومات 📖';trophy='🥉';}
+  else{msg='يُنصح بمراجعة الفصل مجدداً وإعادة الاختبار 📚';trophy='📚';}
+  document.getElementById('trophy').textContent=trophy;
+  document.getElementById('result-msg').textContent=msg;
+}
+
+restartQuiz();
+</script>
+</body>
+</html>

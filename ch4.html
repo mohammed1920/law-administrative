@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الباب الثاني / الفصل الأول – مصادر القواعد الدستورية</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0f172a; --card: #1e293b; --border: #334155;
+            --gold: #c29d5f; --gold-dim: #9a7a47;
+            --green: #10b981; --red: #ef4444;
+            --text: #e2e8f0; --muted: #94a3b8; --radius: 16px;
+        }
+        body { background:var(--bg); font-family:'Cairo','Segoe UI',Tahoma,Arial,sans-serif; color:var(--text); min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:24px 16px 48px; }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:0 25px 60px rgba(0,0,0,.55),0 0 0 1px rgba(194,157,95,.08); width:100%; max-width:780px; padding:36px 36px 28px; position:relative; overflow:hidden; }
+        .card::before { content:''; position:absolute; top:0;left:0;right:0; height:4px; background:linear-gradient(90deg,var(--gold),#e8c97a,var(--gold)); }
+        h1 { color:var(--gold); font-size:1.5rem; font-weight:900; text-align:center; margin-bottom:6px; }
+        .subtitle { text-align:center; font-size:.85rem; color:var(--muted); margin-bottom:22px; }
+        .progress-wrap { background:#0f172a; border-radius:999px; height:7px; margin-bottom:8px; overflow:hidden; }
+        .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold-dim),var(--gold)); border-radius:999px; transition:width .4s ease; }
+        #status { text-align:center; font-size:.82rem; color:var(--muted); margin-bottom:22px; }
+        .score-row { display:flex; justify-content:center; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+        .chip { display:flex; align-items:center; gap:6px; background:#0f172a; border:1px solid var(--border); border-radius:999px; padding:5px 14px; font-size:.82rem; }
+        .chip-dot { width:10px; height:10px; border-radius:50%; }
+        .chip-dot.g { background:var(--green); } .chip-dot.r { background:var(--red); }
+        .q-num { display:inline-block; background:var(--gold); color:#0f172a; font-weight:900; font-size:.78rem; padding:3px 10px; border-radius:6px; margin-bottom:10px; }
+        .q-text { font-size:1.08rem; font-weight:700; line-height:1.75; color:var(--text); margin-bottom:22px; background:rgba(255,255,255,.03); border-right:3px solid var(--gold); padding:12px 16px; border-radius:0 8px 8px 0; }
+        #options { display:flex; flex-direction:column; gap:11px; margin-bottom:22px; }
+        .opt-btn { background:#0f172a; border:1.5px solid var(--border); border-radius:10px; color:var(--text); cursor:pointer; font-family:inherit; font-size:.97rem; font-weight:600; padding:13px 18px; text-align:right; transition:all .22s ease; display:flex; align-items:center; gap:10px; }
+        .opt-btn:hover:not(:disabled) { border-color:var(--gold); background:rgba(194,157,95,.08); transform:translateX(-3px); }
+        .opt-btn .opt-label { background:var(--border); color:var(--gold); border-radius:6px; font-size:.78rem; font-weight:900; padding:2px 8px; flex-shrink:0; }
+        .opt-btn.correct { background:rgba(16,185,129,.12); border-color:var(--green); color:var(--green); }
+        .opt-btn.correct .opt-label { background:var(--green); color:#fff; }
+        .opt-btn.wrong { background:rgba(239,68,68,.1); border-color:var(--red); color:var(--red); }
+        .opt-btn.wrong .opt-label { background:var(--red); color:#fff; }
+        .opt-btn:disabled { cursor:default; transform:none; }
+        #feedback { min-height:28px; font-size:.9rem; font-weight:700; text-align:center; margin-bottom:16px; border-radius:8px; padding:8px 12px; display:none; }
+        #feedback.show { display:block; }
+        #feedback.ok  { background:rgba(16,185,129,.12); color:var(--green); }
+        #feedback.err { background:rgba(239,68,68,.1); color:var(--red); }
+        #next-btn { width:100%; background:linear-gradient(135deg,var(--gold-dim),var(--gold)); border:none; border-radius:10px; color:#0f172a; cursor:pointer; font-family:inherit; font-size:1rem; font-weight:900; padding:14px; transition:opacity .2s,transform .2s; margin-bottom:20px; display:none; }
+        #next-btn:hover { opacity:.88; transform:translateY(-1px); }
+        .footer-nav { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:18px; }
+        .nav-btn { display:inline-flex; align-items:center; gap:7px; background:#0f172a; border:1.5px solid var(--border); border-radius:10px; color:var(--text); cursor:pointer; font-family:inherit; font-size:.88rem; font-weight:700; padding:9px 18px; text-decoration:none; transition:border-color .2s,background .2s; }
+        .nav-btn:hover { border-color:var(--gold); background:rgba(194,157,95,.08); }
+        .nav-btn.tg { border-color:#229ED9; color:#229ED9; }
+        .nav-btn.tg:hover { background:rgba(34,158,217,.08); }
+        #result-screen { display:none; text-align:center; padding:20px 0; }
+        .trophy { font-size:5rem; margin-bottom:14px; animation:pop .5s ease; }
+        @keyframes pop { 0%{transform:scale(0)} 70%{transform:scale(1.15)} 100%{transform:scale(1)} }
+        .result-title { font-size:1.6rem; font-weight:900; color:var(--gold); margin-bottom:8px; }
+        .result-score { font-size:3.5rem; font-weight:900; background:linear-gradient(135deg,var(--gold-dim),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px; }
+        .result-msg { color:var(--muted); font-size:1rem; margin-bottom:24px; }
+        .result-bars { display:flex; justify-content:center; gap:24px; margin-bottom:28px; flex-wrap:wrap; }
+        .rbar { background:#0f172a; border:1px solid var(--border); border-radius:12px; padding:14px 22px; }
+        .rbar-val { font-size:1.5rem; font-weight:900; }
+        .rbar-val.g { color:var(--green); } .rbar-val.r { color:var(--red); }
+        .rbar-lbl { font-size:.8rem; color:var(--muted); }
+        .restart-btn { background:linear-gradient(135deg,var(--gold-dim),var(--gold)); border:none; border-radius:10px; color:#0f172a; cursor:pointer; font-family:inherit; font-size:1rem; font-weight:900; padding:13px 32px; transition:opacity .2s; }
+        .restart-btn:hover { opacity:.85; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div id="quiz-screen">
+        <h1>📜 الباب الثاني / الفصل الأول – مصادر القواعد الدستورية</h1>
+        <p class="subtitle">د. حميد حنون | مبادئ القانون الدستوري وتطور النظام السياسي في العراق</p>
+        <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+        <div id="status"></div>
+        <div class="score-row">
+            <div class="chip"><div class="chip-dot g"></div><span id="correct-count">0</span> صحيح</div>
+            <div class="chip"><div class="chip-dot r"></div><span id="wrong-count">0</span> خطأ</div>
+        </div>
+        <div class="q-num" id="q-num"></div>
+        <div class="q-text" id="question"></div>
+        <div id="options"></div>
+        <div id="feedback"></div>
+        <button id="next-btn">السؤال التالي ◄</button>
+        <div class="footer-nav">
+            <a href="index.html" class="nav-btn">🏠 الرجوع للقائمة الرئيسية</a>
+            <a href="https://t.me/M5M5P" class="nav-btn tg" target="_blank">📢 قناة التليجرام</a>
+        </div>
+    </div>
+    <div id="result-screen">
+        <div class="trophy" id="trophy">🏆</div>
+        <div class="result-title">انتهى الاختبار!</div>
+        <div class="result-score" id="result-score"></div>
+        <div class="result-msg" id="result-msg"></div>
+        <div class="result-bars">
+            <div class="rbar"><div class="rbar-val g" id="r-correct">0</div><div class="rbar-lbl">إجابة صحيحة</div></div>
+            <div class="rbar"><div class="rbar-val r" id="r-wrong">0</div><div class="rbar-lbl">إجابة خاطئة</div></div>
+            <div class="rbar"><div class="rbar-val" id="r-pct" style="color:var(--gold)">0%</div><div class="rbar-lbl">النسبة المئوية</div></div>
+        </div>
+        <button class="restart-btn" onclick="restartQuiz()">🔄 إعادة الاختبار</button>
+        <div class="footer-nav" style="margin-top:24px">
+            <a href="index.html" class="nav-btn">🏠 الرجوع للقائمة الرئيسية</a>
+            <a href="https://t.me/M5M5P" class="nav-btn tg" target="_blank">📢 قناة التليجرام</a>
+        </div>
+    </div>
+</div>
+
+<script>
+const allQuestions = [
+
+/* ══ المبحث الأول: القواعد الدستورية المكتوبة ══ */
+{q:"ما مصادر النظام الدستوري التي يتحدد عنها الكتاب في هذا الفصل؟",
+ opts:["القرارات القضائية والمعاهدات الدولية فقط","القواعد الدستورية المكتوبة والقواعد الدستورية العرفية","التقاليد الدبلوماسية والأعراف الدولية","الفقه القانوني ومراسيم الحكومة"],ans:1},
+
+{q:"ما الذي تشمله القواعد الدستورية المكتوبة؟",
+ opts:["الوثيقة الدستورية المدونة فقط","الوثيقة الدستورية المدونة إضافةً إلى القوانين العادية التي تختص بتنظيم مسائل ذات طبيعة دستورية","المراسيم والتعليمات الحكومية","اللوائح التنفيذية والقرارات الوزارية"],ans:1},
+
+{q:"ما التعريف الأفضل للقانون الدستوري وفق الكتاب؟",
+ opts:["التعريف بالشكل أو المظهر","التعريف بالمضمون أو الجوهر وهو الاتجاه الغالب في الفقه","التعريف بالإجراءات المتبعة في وضعه","التعريف بالمؤسسات التي تطبقه"],ans:1},
+
+{q:"ما العلاقة بين القوانين العادية ذات الطبيعة الدستورية والوثيقة الدستورية من حيث المرتبة؟",
+ opts:["القوانين العادية ذات الطبيعة الدستورية أعلى مرتبةً من الدستور","القوانين العادية ذات الطبيعة الدستورية لا ترقى إلى مرتبة أحكام الدستور وعليها ألا تتعارض معه","القوانين العادية ذات الطبيعة الدستورية مساوية للدستور في المرتبة","القوانين العادية ذات الطبيعة الدستورية تُلغي أحكام الدستور المتعارضة معها"],ans:1},
+
+{q:"ما مثال القوانين العادية ذات الطبيعة الدستورية الذي ذكره الكتاب؟",
+ opts:["قوانين الضرائب والجمارك","قوانين انتخاب أعضاء السلطة التشريعية","قوانين الإجراءات الجزائية","قوانين تنظيم الملكية العقارية"],ans:1},
+
+{q:"ما الموقف الذي سيقتصر عليه الكتاب في دراسة القواعد المكتوبة؟",
+ opts:["دراسة جميع أنواع القوانين","تناول الوثيقة وكيفية نشأتها دون الخوض في القوانين ذات الطبيعة الدستورية لتعددها","دراسة القوانين الانتخابية فقط","مقارنة الدساتير العربية"],ans:1},
+
+/* ══ أساليب وضع الوثيقة الدستورية ══ */
+{q:"إلى كم نوع تنقسم أساليب وضع الدساتير استناداً إلى مدى مشاركة الشعب؟",
+ opts:["نوع واحد","ثلاثة أنواع","نوعان: الأساليب غير الديمقراطية والأساليب الديمقراطية","أربعة أنواع"],ans:2},
+
+/* ══ المنحة ══ */
+{q:"ما تعريف أسلوب المنحة في وضع الدستور؟",
+ opts:["يضع الشعب الدستور بنفسه عبر جمعية منتخبة","يضع الدستور صاحب السلطة المطلقة بتنازله عن بعض اختصاصاته (حقوقه) للشعب وينظم الدستور مباشرته لهذه الحقوق","يُعرَض مسودة الدستور على الشعب للتصويت عليه","يتفق الحاكم والشعب معاً على وضع الدستور"],ans:1},
+
+{q:"مع أي نوع من أنواع الحكم يتفق أسلوب المنحة؟",
+ opts:["الحكم الجمهوري الديمقراطي","أسلوب الحكم المطلق وهو أسلوب صاحب السيادة المطلقة","الحكم البرلماني","الحكم الاشتراكي"],ans:1},
+
+{q:"من أمثلة الدساتير الصادرة بأسلوب المنحة:",
+ opts:["دستور الولايات المتحدة 1787 ودستور فرنسا 1791","دستور فرنسا 1814 ودستور اليابان 1889 ودستور مصر 1923","دستور فرنسا 1946 ودستور العراق 2005","دستور بلجيكا 1831 وليبيا 1951"],ans:1},
+
+{q:"ما موقف الفقه الراجح من مسألة حق الحاكم في استرداد المنحة التي منحها للشعب؟",
+ opts:["يحق له استردادها في أي وقت","يحق له استردادها إذا كانت نتيجة ضغط","الرأي الراجح أن الحاكم لم يتنازل عن حقوقه طواعية بل نتيجة ضغوط وعلى الأمة دوراً ومساهمة في صنع الدستور فلا يحق استرداد المنحة","يحق له استردادها بشرط موافقة البرلمان"],ans:2},
+
+{q:"ما مثال تطبيق الرأي الراجح في مسألة استرداد المنحة عملياً في التاريخ؟",
+ opts:["ما حدث في بريطانيا حين صدر الماغنا كارتا","ما حدث في فرنسا حين قرر الملك شارل العاشر إلغاء دستور 1814 فقامت ثورة ضده","ما حدث في مصر عام 1952","ما حدث في الاتحاد السوفيتي عام 1917"],ans:1},
+
+/* ══ العقد ══ */
+{q:"ما تعريف أسلوب العقد في وضع الدستور؟",
+ opts:["يضعه الحاكم منفرداً","ينشأ الدستور نتيجة تلاقي إرادتي الحاكم والشعب وينوب عن الشعب في ذلك جمعية تأسيسية أو برلمان نيابي","يضعه الشعب بالاستفتاء المباشر","تضعه لجنة دولية محايدة"],ans:1},
+
+{q:"ما الفرق الجوهري بين أسلوب العقد وأسلوب المنحة من حيث دور الشعب؟",
+ opts:["لا فرق بينهما","في العقد يظهر دور الشعب بجلاء عكس المنحة التي لا يكون دوره ظاهراً بوضوح","في المنحة يكون دور الشعب أوضح","العقد يُعطي الحاكم صلاحيات أكثر"],ans:1},
+
+{q:"ما الحكم الذي يسري على تعديل أو إلغاء الدستور وفق أسلوب العقد؟",
+ opts:["يجوز للحاكم تعديله أو إلغاؤه منفرداً","لا يجوز تعديله أو إلغاؤه إلا بموافقة الطرفين","يجوز للشعب تعديله بالاستفتاء دون موافقة الحاكم","يجوز تعديله بقرار من المحكمة الدستورية"],ans:1},
+
+{q:"لماذا يعدّ أسلوب العقد أكثر تطوراً من أسلوب المنحة؟",
+ opts:["لأنه ينتج دستوراً أطول وأكثر تفصيلاً","لأنه يُعرّف الشعب بدوره في مباشرة خصائص السيادة وإن كانت الأولى لم تصل لجعله صاحب سيادة مطلقاً","لأنه أسرع في التطبيق","لأنه يمنح الحاكم صلاحيات أوسع"],ans:1},
+
+{q:"من أمثلة الدساتير الصادرة بأسلوب العقد:",
+ opts:["دستور الولايات المتحدة 1787","دستور فرنسا 1830 بعد ثورة ضد الملك شارل العاشر، ودستور اليونان 1844، ورومانيا 1864","دستور فرنسا 1946 ودستور مصر 1956","دستور العراق 2005"],ans:1},
+
+/* ══ الأساليب الديمقراطية ══ */
+{q:"ما الأساس الذي يقوم عليه اعتماد الأساليب الديمقراطية في وضع الدستور؟",
+ opts:["أن الحكومة هي الجهة الوحيدة صاحبة السيادة","أن الشعب هو الجهة الوحيدة التي تضع الدستور بوصفه صاحب السيادة دون مشاركة أحد في ذلك","أن الجيش يمثل الشعب","أن المحاكم هي المرجعية الأخيرة"],ans:1},
+
+{q:"ما صورتا الأساليب الديمقراطية في وضع الوثيقة الدستورية؟",
+ opts:["المنحة والعقد","الجمعية التأسيسية والاستفتاء الدستوري","البرلمان والاستفتاء","لجنة الخبراء والاستفتاء"],ans:1},
+
+/* ══ الجمعية التأسيسية ══ */
+{q:"ما المقصود بطريقة الجمعية التأسيسية في وضع الدستور؟",
+ opts:["تعيين الحكومة لخبراء قانونيين لكتابة الدستور","ينتخب الشعب جمعية تأسيسية مهمتها المحددة وضع الدستور نيابةً عنه","يضع الدستور مجلس الوزراء الحالي","تختار كل منطقة ممثلاً واحداً لكتابة الدستور"],ans:1},
+
+{q:"في أي دولة نشأت طريقة الجمعية التأسيسية لأول مرة؟",
+ opts:["فرنسا بعد الثورة الكبرى","الولايات المتحدة الأمريكية بعد الاستقلال حيث وضعت معظم دساتير الولايات وفق هذا الأسلوب","بريطانيا في القرن السابع عشر","سويسرا بعد قيام الاتحاد"],ans:1},
+
+{q:"ما الدساتير التي ذكرها الكتاب كأمثلة على أسلوب الجمعية التأسيسية؟",
+ opts:["دستور فرنسا 1814 ودستور مصر 1923","دستور الولايات المتحدة 1787، دستور فرنسا 1791 و1848 و1875، دستور بلجيكا 1831، دستور ليبيا 1951","دستور العراق 2005 ودستور فرنسا 1958","دستور اليابان 1889 واثيوبيا 1931"],ans:1},
+
+/* ══ الاستفتاء الدستوري ══ */
+{q:"ما المقصود بطريقة الاستفتاء الدستوري؟",
+ opts:["يُعرَض الدستور على البرلمان للمصادقة","يقوم الشعب بالموافقة على الدستور مباشرةً عبر الاستفتاء ولا يصدر الدستور ما لم يقترن بموافقة الشعب","يُعرَض الدستور على القضاء للمراجعة","تصوت الحكومة على مسودة الدستور"],ans:1},
+
+{q:"هل يشترط في طريقة الاستفتاء الدستوري أن يكتب الشعب مسودة الدستور بنفسه؟",
+ opts:["نعم، يجب أن يكتبه الشعب مباشرةً","لا، إذ يجوز أن تضع مسودته جهة أخرى كلجنة فنية أو برلمان أو حكومة لأن القرار النهائي في الإصدار يعود إلى الشعب","نعم، ولا يجوز لأي جهة وضع المسودة","نعم، وإلا اعتُبر الدستور باطلاً"],ans:1},
+
+{q:"من أمثلة الدساتير الصادرة بأسلوب الاستفتاء الدستوري التي ذكرها الكتاب؟",
+ opts:["دستور فرنسا 1814 ودستور مصر 1923","دستور فرنسا 1946 و1958، ودستور مصر 1956 و1971، ودستور العراق 2005","دستور الولايات المتحدة 1787 ودستور بلجيكا 1831","دستور اليابان 1889 ودستور اليونان 1844"],ans:1},
+
+/* ══ تقييم أساليب وضع الدساتير ══ */
+{q:"ما العاملان الرئيسيان اللذان يُرجع إليهما الكتاب تباين الدول في طرق وضع دساتيرها؟",
+ opts:["الجغرافيا والمناخ","التطور التاريخي للنظام السياسي في أي دولة، والفكر السياسي والثقافي للمواطنين","الحجم الجغرافي والكثافة السكانية","القوة الاقتصادية والنفوذ العسكري"],ans:1},
+
+{q:"ما الذي يلاحظه الكتاب بشأن الأسلوب اللاحق مقارنةً بالسابق في تطور أساليب وضع الدساتير؟",
+ opts:["الأسلوب اللاحق دائماً أسرع وأبسط","الأسلوب اللاحق أكثر تقدماً من الأسلوب السابق بصرف النظر عن صورة ذلك الأسلوب","الأسلوب اللاحق أكثر تعقيداً وأقل فعالية","لا فرق في الجودة بين الأساليب"],ans:1},
+
+{q:"ما الأسلوب الأمثل لإقامة الدساتير الذي يُقره الكتاب؟",
+ opts:["أسلوب المنحة لأنه الأقدم وأكثر استقراراً","أسلوب العقد لأنه يجمع بين الحاكم والشعب","أسلوب الاستفتاء الديمقراطي وإن كنا نميل إلى طريقة جمعية من المواطنين ذوي الكفاءات تكتب الدستور ثم يُعرض على استفتاء شعبي","أسلوب الجمعية التأسيسية وحده دون استفتاء"],ans:2},
+
+{q:"ما الشرط الذي يؤكده الكتاب لنجاح الاستفتاء الدستوري بعد كتابة مسودة الدستور؟",
+ opts:["مصادقة الدول الكبرى على الدستور","أن تسبقه توعية شاملة للمواطنين بأحكامه ومنح الشعب الوقت الكافي لفهم نصوصه قبل إبداء الرأي","موافقة المحكمة الدستورية على المسودة","الحصول على دعم الأحزاب السياسية الكبرى"],ans:1},
+
+{q:"ما الانتقاد الذي وجّهه الكتاب لدستور العراق 2005 فيما يخص طريقة وضعه؟",
+ opts:["أنه أُعِد بطريقة المنحة","أنه كُتب على عجل مما جعله مشوباً بالعيوب والنقائص، وبعض مشاركيه يشير إلى ضرورة مراجعته مما أدى لإضافة المادة 142 التي تستوجب مراجعته","أنه اعتمد أسلوب الجمعية التأسيسية دون استفتاء","أنه نسخة من دستور أجنبي"],ans:1},
+
+{q:"ماذا تقضي المادة 142 من الدستور العراقي 2005؟",
+ opts:["تُلزم بتعديل الدستور كل خمس سنوات","تقضي بضرورة مراجعة الدستور خلال مدة زمنية محددة","تُلغي جميع الدساتير السابقة","تُحدد آلية تعيين رئيس الجمهورية"],ans:1},
+
+/* ══ المبحث الثاني: العرف الدستوري وأنواعه ══ */
+{q:"ما تعريف العرف الدستوري؟",
+ opts:["قانون يصدر عن السلطة التشريعية لتنظيم عمل الحكومة","قاعدة مطردة أو عادة يُقصد بها تنظيم العلاقات بين السلطات الحاكمة بعضها وبين الأفراد ويكون لها صفة الإلزام في الرأي القانوني للجماعة","مرسوم صادر عن رئيس الدولة","حكم قضائي صادر عن المحكمة الدستورية"],ans:1},
+
+{q:"كم ركناً للعرف الدستوري؟",
+ opts:["ركن واحد","ثلاثة أركان","ركنان: الركن المادي والركن المعنوي","أربعة أركان"],ans:2},
+
+{q:"ما المقصود بالركن المادي للعرف الدستوري؟",
+ opts:["وجود نص مكتوب يسند العرف","قيام السلطات المختصة بالتطبيق المطرد بالفعل بشكل مستمر دون أن يلاقي اعتراضاً من السلطات الأخرى أو أفراد الجماعة","موافقة البرلمان على العرف","صدور حكم قضائي بتأييد العرف"],ans:1},
+
+{q:"ما المقصود بالركن المعنوي للعرف الدستوري؟",
+ opts:["وجود نص تشريعي يؤكد العرف","أن يكون للفعل (العادة) صفة الإلزام وذلك لوجود اعتقاد لدى الجماعة بضرورة احترام هذه القاعدة وعدم مخالفتها","موافقة رئيس الدولة على العرف","تسجيل العرف لدى الجهات الرسمية"],ans:1},
+
+{q:"كم نوعاً للعرف الدستوري بالنسبة لمرتبته من النصوص الدستورية؟",
+ opts:["نوع واحد","نوعان","أربعة أنواع","ثلاثة أنواع: المفسر والمكمل والمعدل"],ans:3},
+
+/* ══ العرف الدستوري المفسر ══ */
+{q:"ما تعريف العرف الدستوري المفسر؟",
+ opts:["العرف الذي يُنشئ قاعدة دستورية جديدة","العرف الذي يقتصر أثره على تفسير نص من نصوص الدستور عن طريق الإيضاح والإيضاح بدون إنشاء قاعدة جديدة","العرف الذي يُعدّل حكماً دستورياً بالإضافة أو الحذف","العرف الذي يُلغي نصاً دستورياً قديماً"],ans:1},
+
+{q:"ما القوة القانونية للعرف الدستوري المفسر؟",
+ opts:["له قوة أقل من النص الدستوري","يذهب الفقه إلى أن العرف المفسر تكون له قوة النص الذي فسره","له قوة القانون العادي فقط","ليس له أي قوة قانونية ملزمة"],ans:1},
+
+{q:"ما مثال العرف الدستوري المفسر الذي أورده الكتاب من فرنسا؟",
+ opts:["مسألة استخدام رئيس الجمهورية لحقه في حل مجلس النواب","ما استقر العمل عليه في ظل دستور فرنسا 1875 بشأن تخويل رئيس الجمهورية إصدار اللوائح استناداً إلى نص الدستور بأن رئيس الجمهورية يكفل تنفيذ القوانين","مسألة إجراء الانتخابات الرئاسية المبكرة","مسألة تشكيل الحكومة بعد الانتخابات"],ans:1},
+
+/* ══ العرف الدستوري المكمل ══ */
+{q:"ما تعريف العرف الدستوري المكمل؟",
+ opts:["العرف الذي يُفسر نصاً دستورياً موجوداً","العرف الذي ينظم مسألة لم ينظمها المشرع الدستوري فهو يكمل نقصاً في نصوص الدستور وينشئ قاعدة دستورية جديدة","العرف الذي يُعدّل حكماً دستورياً بالحذف","العرف الذي يُلغي قانوناً عادياً"],ans:1},
+
+{q:"ما موقف الفريق الأول في الفقه من قوة العرف الدستوري المكمل؟",
+ opts:["له مرتبة القانون العادي","للعرف المكمل قوة الدستور لأنه يماثل العرف المفسر في ارتكازه على واقع الأمر","له مرتبة أدنى من اللوائح التنفيذية","لا يعترف به قانوناً"],ans:1},
+
+{q:"ما موقف الفريق الثاني الراجح في الفقه من قوة العرف الدستوري المكمل؟",
+ opts:["له قوة الدستور الكاملة","العرف المكمل لا يرقى إلى مرتبة النصوص الدستورية وإنما يكون بمرتبة قواعد القانون العادي وقوته تتمثل في الإرادة المفروضة للمشرع","له قوة أعلى من الدستور","له قوة معادلة لقرارات المحكمة الدستورية"],ans:1},
+
+{q:"ما سبب ذهاب الفريق الثاني إلى أن العرف المكمل مرتبته كمرتبة القانون العادي؟",
+ opts:["لأن المشرع يمكنه دائماً إلغاؤه","لأن المشرع لا يملك بإرادته الصريحة أن يجعل للتشريعات العادية قوة النصوص الدستورية وأن يتحمل القانون الأساسي تعديلاً من جهاز غير الجهاز الدستوري","لأن العرف لا يُعتد به في الأنظمة الحديثة","لأن العرف غير مكتوب فلا يُحتج به أمام القضاء"],ans:1},
+
+{q:"ما مثال العرف الدستوري المكمل الذي أورده الكتاب؟",
+ opts:["تعيين رئيس الوزراء من قِبل رئيس الجمهورية","ما جرت العادة عليه في فرنسا في ظل دستور 1875 من كون الانتخاب مباشراً بينما سكت الدستور عن تحديد وضع الانتخاب هل هو مباشر أم غير مباشر","تعيين أعضاء المحكمة الدستورية","توزيع الحقائب الوزارية بين الأحزاب"],ans:1},
+
+/* ══ العرف الدستوري المعدل ══ */
+{q:"ما تعريف العرف الدستوري المعدل؟",
+ opts:["العرف الذي يُفسر نصاً دستورياً غامضاً","العرف الذي يتصرف أثره إلى تعديل حكم من أحكام الدستور سواء بالإضافة أو بالحذف","العرف الذي يُكمل نقصاً في الدستور","العرف الذي يُوضح إجراءات التصويت في البرلمان"],ans:1},
+
+{q:"كيف يعمل العرف الدستوري المعدل بالإضافة؟",
+ opts:["يُلغي نصاً دستورياً قائماً","يهدف إلى إضافة حكم جديد إلى الدستور لم يَرد في نصوصه كأن يمنح إحدى السلطات اختصاصاً جديداً لم ينظمه الدستور","يُفسر نصاً دستورياً غامضاً","يُنشئ محكمة دستورية جديدة"],ans:1},
+
+{q:"ما مثال العرف الدستوري المعدل بالحذف الذي أورده الكتاب من فرنسا؟",
+ opts:["عدم إصدار رئيس الجمهورية للمراسيم","ما جرى في ظل دستور فرنسا 1875 من عدم استعمال رئيس الجمهورية لسلطته في حل مجلس النواب وهو ما أدى إلى إهمال وتعطيل هذا النص","رفض البرلمان المصادقة على الميزانية","امتناع رئيس الجمهورية عن توقيع المعاهدات"],ans:1},
+
+{q:"ما الرأي الذي يُرجّحه الكتاب في قيمة العرف الدستوري المعدل القانونية؟",
+ opts:["له مرتبة النصوص الدستورية الكاملة","الرأي الراجح أن العرف المعدل لا يرقى إلى مرتبة النصوص الدستورية","له مرتبة أعلى من الدستور","له مرتبة مساوية للمعاهدات الدولية"],ans:1},
+
+{q:"ما السبب الذي يستند إليه الرأي الراجح في رفض إعطاء العرف المعدل قوة الدستور؟",
+ opts:["لأن العرف غير مكتوب","لأن القول بذلك يتعارض مع مبدأ السيادة الشعبية ومبدأ المبادئ القانونية التي تحتم احترام أحكام الدستور ويفرض على المشرع الالتزام بالطرق التي رسمها الدستور لتعديل أحكامه","لأن العرف لا يُقبل كمصدر للقانون الدستوري","لأن المحاكم لا تعترف بالعرف"],ans:1},
+
+{q:"ما الفرق بين العرف المكمل والعرف المعدل؟",
+ opts:["لا فرق بينهما، كلاهما يُنشئ قاعدة جديدة","العرف المكمل يُنشئ قاعدة جديدة في مسألة لم ينظمها الدستور أصلاً، أما العرف المعدل فيتصرف أثره في تعديل حكم دستوري قائم فعلاً بالإضافة أو الحذف","العرف المكمل يُعدّل الدستور والمعدل يُفسره","العرف المكمل خاص بالسلطة التنفيذية والمعدل خاص بالسلطة التشريعية"],ans:1},
+
+{q:"لأي سبب يرى الكتاب أن الدساتير الوضعية وفق الأسلوب الديمقراطي لا تكتبها الشعوب في الغالب؟",
+ opts:["لأن الشعوب ترفض المشاركة في كتابة الدستور","لأن القوى السياسية الفاعلة في المجتمع هي من تكتبها وتقوم بتسطير ما تؤمن به وتسوقه للناس للتصويت عليه بنعم أو لا","لأن الشعوب لا تملك الخبرة القانونية الكافية","لأن الدول الكبرى تفرض نصوص الدساتير"],ans:1},
+
+{q:"ما وصف الكتاب للأسلوب الديمقراطي بشكل إجمالي من حيث العيوب؟",
+ opts:["هو الأفضل بلا عيوب","يلاحظ بشكل إجمالي أن الدساتير التي وضعت وفقاً للأسلوب الديمقراطي كانت بمنأى عن النقد لأن الشعب كان أبعد ما يكون عن المشاركة الحقيقية","أن الدساتير وفقه تكون قصيرة وغير مفصلة","أن الدساتير وفقه تفتقر للشرعية الدولية"],ans:1},
+
+{q:"ما طبيعة القوانين ذات الطبيعة الدستورية في العراق وما الدستور الذي ذكره الكتاب كبداية؟",
+ opts:["صدرت مدمجة في الدستور منذ الاستقلال","صدرت قوانين منفصلة عن الدستور منذ تأسيس الدولة العراقية وأول دساتيرها الدستور الأول سنة 1925","لا توجد قوانين ذات طبيعة دستورية في العراق","صدرت جميعها بعد عام 2005"],ans:1},
+
+{q:"لماذا يلجأ المشرع الدستوري لأسلوب القوانين العادية ذات الطبيعة الدستورية بدلاً من تضمينها الوثيقة الدستورية؟",
+ opts:["لتسهيل تعديلها مستقبلاً دون المرور بإجراءات تعديل الدستور","لأن الوثيقة الدستورية لا تتناول عادةً كل التفاصيل وهناك مسائل ذات طبيعة دستورية تحتاج تنظيماً تشريعياً مفصلاً","لأن هذه القوانين تصدر بسرعة أكبر","لإخفائها عن الرأي العام"],ans:1},
+
+{q:"ما الأسلوب الذي اعتمدته كل من فرنسا 1830 وبلغاريا 1869 في وضع دساتيرها؟",
+ opts:["أسلوب المنحة","أسلوب العقد","أسلوب الجمعية التأسيسية","أسلوب الاستفتاء"],ans:1},
+
+{q:"في ظل دستور فرنسا 1875، ما المسألة التي أثارها العرف المعدل بالحذف وفق الكتاب؟",
+ opts:["عدم استخدام رئيس الجمهورية لصلاحيات التشريع بمرسوم","عدم استعمال رئيس الجمهورية لسلطته في حل مجلس النواب الأمر الذي أدى إلى إهمال وتعطيل هذا النص الدستوري","عدم انعقاد البرلمان في مواعيده المقررة","عدم نشر المراسيم التنفيذية في الجريدة الرسمية"],ans:1},
+
+{q:"ما دلالة عبارة (أن تكون الإرادة المنفردة مصدراً للإلزام متى صادفت قبولاً من ذوي الشأن) في سياق تقييم أسلوب المنحة؟",
+ opts:["أن المنحة تكون ملزمة دائماً بغض النظر عن قبول الشعب","أن الدستور الصادر بالمنحة يمكن أن يُعتبر مصدراً للإلزام إذا قبله الشعب وذلك يُضعف حجة من يقول إن للحاكم حق استرداد المنحة","أن الإرادة الشعبية لا قيمة لها في هذا السياق","أن المنحة تُعتبر عقداً ضمنياً"],ans:1},
+
+{q:"هل يُعدّ العرف الدستوري مصدراً للقاعدة الدستورية حتى في الدول التي تأخذ بمبدأ الرقابة الدستورية؟",
+ opts:["لا، لأن القاضي الدستوري لا يعترف بالعرف","نعم، يُعدّ العرف مصدراً مهماً للقاعدة الدستورية حيث يتيح للنظام الدستوري المرونة والتكيف مع المستجدات التي لم تتناولها نصوص الوثيقة","لا، لأن دوره انتهى بظهور الرقابة الدستورية","نعم، ولكنه يُطبَّق فقط في حالة تعارض نصين دستوريين"],ans:1}
+
+];
+
+/* ── State ── */
+let questions=[],current=0,correct=0,wrong=0,answered=false;
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }return arr;
+}
+
+function restartQuiz(){
+  current=0;correct=0;wrong=0;answered=false;
+  questions=shuffle([...allQuestions]);
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  const q=questions[current],total=questions.length;
+  document.getElementById('progress-fill').style.width=((current/total)*100)+'%';
+  document.getElementById('status').textContent=`سؤال ${current+1} من ${total}`;
+  document.getElementById('q-num').textContent=`س${current+1}`;
+  document.getElementById('question').textContent=q.q;
+  document.getElementById('correct-count').textContent=correct;
+  document.getElementById('wrong-count').textContent=wrong;
+  const fb=document.getElementById('feedback');fb.className='';fb.textContent='';
+  document.getElementById('next-btn').style.display='none';
+  const labels=['أ','ب','ج','د'],indices=[0,1,2,3];shuffle(indices);
+  const container=document.getElementById('options');container.innerHTML='';
+  indices.forEach((origIdx,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML=`<span class="opt-label">${labels[i]}</span>${q.opts[origIdx]}`;
+    btn.dataset.orig=origIdx;
+    btn.addEventListener('click',()=>handleAnswer(btn,origIdx,q.ans));
+    container.appendChild(btn);
+  });
+}
+
+function handleAnswer(clickedBtn,chosen,correct_orig){
+  if(answered)return;answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled=true;
+    if(parseInt(b.dataset.orig)===correct_orig)b.classList.add('correct');
+  });
+  const fb=document.getElementById('feedback');
+  if(chosen===correct_orig){correct++;clickedBtn.classList.add('correct');fb.textContent='✅ إجابة صحيحة!';fb.className='show ok';}
+  else{wrong++;clickedBtn.classList.add('wrong');fb.textContent='❌ إجابة خاطئة! الجواب الصحيح محدد باللون الأخضر.';fb.className='show err';}
+  document.getElementById('correct-count').textContent=correct;
+  document.getElementById('wrong-count').textContent=wrong;
+  document.getElementById('next-btn').style.display='block';
+}
+
+document.getElementById('next-btn').addEventListener('click',()=>{
+  current++;
+  if(current>=questions.length)showResult();else showQuestion();
+});
+
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  const total=questions.length,pct=Math.round((correct/total)*100);
+  document.getElementById('result-score').textContent=`${correct} / ${total}`;
+  document.getElementById('r-correct').textContent=correct;
+  document.getElementById('r-wrong').textContent=wrong;
+  document.getElementById('r-pct').textContent=pct+'%';
+  let msg='',trophy='🏆';
+  if(pct>=90){msg='ممتاز! أداء رائع ومتميز 🌟';trophy='🥇';}
+  else if(pct>=75){msg='جيد جداً! مستوى متقدم 👏';trophy='🥈';}
+  else if(pct>=60){msg='جيد، راجع الفصل لتعزيز المعلومات 📖';trophy='🥉';}
+  else{msg='يُنصح بمراجعة الفصل مجدداً وإعادة الاختبار 📚';trophy='📚';}
+  document.getElementById('trophy').textContent=trophy;
+  document.getElementById('result-msg').textContent=msg;
+}
+
+restartQuiz();
+</script>
+</body>
+</html>

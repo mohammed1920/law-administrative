@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الباب الثالث / الفصل الأول – الأوضاع الدستورية في العراق</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0f172a; --card: #1e293b; --border: #334155;
+            --gold: #c29d5f; --gold-dim: #9a7a47;
+            --green: #10b981; --red: #ef4444;
+            --text: #e2e8f0; --muted: #94a3b8; --radius: 16px;
+        }
+        body { background:var(--bg); font-family:'Cairo','Segoe UI',Tahoma,Arial,sans-serif; color:var(--text); min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:24px 16px 48px; }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:0 25px 60px rgba(0,0,0,.55),0 0 0 1px rgba(194,157,95,.08); width:100%; max-width:780px; padding:36px 36px 28px; position:relative; overflow:hidden; }
+        .card::before { content:''; position:absolute; top:0;left:0;right:0; height:4px; background:linear-gradient(90deg,var(--gold),#e8c97a,var(--gold)); }
+        h1 { color:var(--gold); font-size:1.45rem; font-weight:900; text-align:center; margin-bottom:6px; }
+        .subtitle { text-align:center; font-size:.85rem; color:var(--muted); margin-bottom:22px; }
+        .progress-wrap { background:#0f172a; border-radius:999px; height:7px; margin-bottom:8px; overflow:hidden; }
+        .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold-dim),var(--gold)); border-radius:999px; transition:width .4s ease; }
+        #status { text-align:center; font-size:.82rem; color:var(--muted); margin-bottom:22px; }
+        .score-row { display:flex; justify-content:center; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+        .chip { display:flex; align-items:center; gap:6px; background:#0f172a; border:1px solid var(--border); border-radius:999px; padding:5px 14px; font-size:.82rem; }
+        .chip-dot { width:10px; height:10px; border-radius:50%; }
+        .chip-dot.g { background:var(--green); } .chip-dot.r { background:var(--red); }
+        .q-num { display:inline-block; background:var(--gold); color:#0f172a; font-weight:900; font-size:.78rem; padding:3px 10px; border-radius:6px; margin-bottom:10px; }
+        .q-text { font-size:1.05rem; font-weight:700; line-height:1.75; color:var(--text); margin-bottom:22px; background:rgba(255,255,255,.03); border-right:3px solid var(--gold); padding:12px 16px; border-radius:0 8px 8px 0; }
+        #options { display:flex; flex-direction:column; gap:11px; margin-bottom:22px; }
+        .opt-btn { background:#0f172a; border:1.5px solid var(--border); border-radius:10px; color:var(--text); cursor:pointer; font-family:inherit; font-size:.95rem; font-weight:600; padding:13px 18px; text-align:right; transition:all .22s ease; display:flex; align-items:center; gap:10px; }
+        .opt-btn:hover:not(:disabled) { border-color:var(--gold); background:rgba(194,157,95,.08); transform:translateX(-3px); }
+        .opt-btn .opt-label { background:var(--border); color:var(--gold); border-radius:6px; font-size:.78rem; font-weight:900; padding:2px 8px; flex-shrink:0; }
+        .opt-btn.correct { background:rgba(16,185,129,.12); border-color:var(--green); color:var(--green); }
+        .opt-btn.correct .opt-label { background:var(--green); color:#fff; }
+        .opt-btn.wrong { background:rgba(239,68,68,.1); border-color:var(--red); color:var(--red); }
+        .opt-btn.wrong .opt-label { background:var(--red); color:#fff; }
+        .opt-btn:disabled { cursor:default; transform:none; }
+        #feedback { min-height:28px; font-size:.9rem; font-weight:700; text-align:center; margin-bottom:16px; border-radius:8px; padding:8px 12px; display:none; }
+        #feedback.show { display:block; }
+        #feedback.ok  { background:rgba(16,185,129,.12); color:var(--green); }
+        #feedback.err { background:rgba(239,68,68,.1); color:var(--red); }
+        #next-btn { width:100%; background:linear-gradient(135deg,var(--gold-dim),var(--gold)); border:none; border-radius:10px; color:#0f172a; cursor:pointer; font-family:inherit; font-size:1rem; font-weight:900; padding:14px; transition:opacity .2s,transform .2s; margin-bottom:20px; display:none; }
+        #next-btn:hover { opacity:.88; transform:translateY(-1px); }
+        .footer-nav { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:18px; }
+        .nav-btn { display:inline-flex; align-items:center; gap:7px; background:#0f172a; border:1.5px solid var(--border); border-radius:10px; color:var(--text); cursor:pointer; font-family:inherit; font-size:.88rem; font-weight:700; padding:9px 18px; text-decoration:none; transition:border-color .2s,background .2s; }
+        .nav-btn:hover { border-color:var(--gold); background:rgba(194,157,95,.08); }
+        .nav-btn.tg { border-color:#229ED9; color:#229ED9; }
+        .nav-btn.tg:hover { background:rgba(34,158,217,.08); }
+        #result-screen { display:none; text-align:center; padding:20px 0; }
+        .trophy { font-size:5rem; margin-bottom:14px; animation:pop .5s ease; }
+        @keyframes pop { 0%{transform:scale(0)} 70%{transform:scale(1.15)} 100%{transform:scale(1)} }
+        .result-title { font-size:1.6rem; font-weight:900; color:var(--gold); margin-bottom:8px; }
+        .result-score { font-size:3.5rem; font-weight:900; background:linear-gradient(135deg,var(--gold-dim),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px; }
+        .result-msg { color:var(--muted); font-size:1rem; margin-bottom:24px; }
+        .result-bars { display:flex; justify-content:center; gap:24px; margin-bottom:28px; flex-wrap:wrap; }
+        .rbar { background:#0f172a; border:1px solid var(--border); border-radius:12px; padding:14px 22px; }
+        .rbar-val { font-size:1.5rem; font-weight:900; }
+        .rbar-val.g { color:var(--green); } .rbar-val.r { color:var(--red); }
+        .rbar-lbl { font-size:.8rem; color:var(--muted); }
+        .restart-btn { background:linear-gradient(135deg,var(--gold-dim),var(--gold)); border:none; border-radius:10px; color:#0f172a; cursor:pointer; font-family:inherit; font-size:1rem; font-weight:900; padding:13px 32px; transition:opacity .2s; }
+        .restart-btn:hover { opacity:.85; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div id="quiz-screen">
+        <h1>📋 الباب الثالث / الفصل الأول – الأوضاع الدستورية في العراق قبل صدور دستور 1925 وبعد إقامته</h1>
+        <p class="subtitle">د. حميد حنون | مبادئ القانون الدستوري وتطور النظام السياسي في العراق</p>
+        <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+        <div id="status"></div>
+        <div class="score-row">
+            <div class="chip"><div class="chip-dot g"></div><span id="correct-count">0</span> صحيح</div>
+            <div class="chip"><div class="chip-dot r"></div><span id="wrong-count">0</span> خطأ</div>
+        </div>
+        <div class="q-num" id="q-num"></div>
+        <div class="q-text" id="question"></div>
+        <div id="options"></div>
+        <div id="feedback"></div>
+        <button id="next-btn">السؤال التالي ◄</button>
+        <div class="footer-nav">
+            <a href="index.html" class="nav-btn">🏠 الرجوع للقائمة الرئيسية</a>
+            <a href="https://t.me/M5M5P" class="nav-btn tg" target="_blank">📢 قناة التليجرام</a>
+        </div>
+    </div>
+    <div id="result-screen">
+        <div class="trophy" id="trophy">🏆</div>
+        <div class="result-title">انتهى الاختبار!</div>
+        <div class="result-score" id="result-score"></div>
+        <div class="result-msg" id="result-msg"></div>
+        <div class="result-bars">
+            <div class="rbar"><div class="rbar-val g" id="r-correct">0</div><div class="rbar-lbl">إجابة صحيحة</div></div>
+            <div class="rbar"><div class="rbar-val r" id="r-wrong">0</div><div class="rbar-lbl">إجابة خاطئة</div></div>
+            <div class="rbar"><div class="rbar-val" id="r-pct" style="color:var(--gold)">0%</div><div class="rbar-lbl">النسبة المئوية</div></div>
+        </div>
+        <button class="restart-btn" onclick="restartQuiz()">🔄 إعادة الاختبار</button>
+        <div class="footer-nav" style="margin-top:24px">
+            <a href="index.html" class="nav-btn">🏠 الرجوع للقائمة الرئيسية</a>
+            <a href="https://t.me/M5M5P" class="nav-btn tg" target="_blank">📢 قناة التليجرام</a>
+        </div>
+    </div>
+</div>
+
+<script>
+const allQuestions = [
+
+/* ══ المبحث الأول: العراق في ظل الهيمنة العثمانية ══ */
+{q:"ظلّ العراق تحت الهيمنة العثمانية حتى متى؟",
+ opts:["حتى نهاية الحرب العالمية الأولى 1918","حتى إعلان الانتداب البريطاني 1920","حتى صدور دستور 1925","حتى سقوط بغداد بيد القوات البريطانية في آذار 1917"],ans:3},
+
+{q:"ما القانون الذي كان يحكم العراق قانونياً وفعلاً قبل الاحتلال البريطاني؟",
+ opts:["قانون الولايات العثماني 1864","القانون المدني الفرنسي","قانون الانتداب البريطاني","القانون الأساسي العثماني الصادر سنة 1876م"],ans:3},
+
+{q:"في عهد أيّ سلطان عثماني صدر القانون الأساسي العثماني عام 1876؟",
+ opts:["السلطان محمد رشاد","السلطان مراد الخامس","السلطان سليم الثالث","السلطان عبد الحميد الثاني"],ans:3},
+
+{q:"بأيّ اسم سُمِّيت مرحلة إصدار القانون الأساسي العثماني؟",
+ opts:["الدستورية","التنظيمات","التحرر","المشروطية"],ans:3},
+
+{q:"ما الهدف المُعلَن من إصدار القانون الأساسي العثماني 1876؟",
+ opts:["توحيد ولايات الدولة العثمانية","إعلان الاستقلال عن أوروبا","منح الأقليات حقوقاً متساوية","التخفيف من نظام الحكم المطلق وجعل حكم السلطان مقيداً بالقانون"],ans:3},
+
+{q:"كيف صدر القانون الأساسي العثماني 1876 من حيث طريقة الإصدار؟",
+ opts:["بطريقة العقد بين الملك والأمة","بقرار من البرلمان المنتخب","بمرسوم من مجلس الوزراء","وفقاً لطريقة المنحة"],ans:3},
+
+{q:"من أيّ مجلسَين كانت تتألف السلطة التشريعية في ظل القانون الأساسي العثماني؟",
+ opts:["مجلس الشيوخ ومجلس النواب","مجلس الوزراء ومجلس الشورى","مجلس واحد منتخب من الشعب","مجلسَي الأعيان والمبعوثان"],ans:3},
+
+{q:"كيف كان يتشكّل مجلس الأعيان في القانون الأساسي العثماني؟",
+ opts:["ينتخبه الشعب مدة أربع سنوات","يُنتخب من قِبَل البرلمان المحلي","يُعيَّن من رجال الدين والعلماء","يُعيِّن السلطان أعضاءه مدى الحياة"],ans:3},
+
+{q:"ما مدة ولاية مجلس المبعوثان في القانون الأساسي العثماني؟",
+ opts:["سنتان","ثلاث سنوات","ست سنوات","أربع سنوات"],ans:3},
+
+{q:"ما الذي انفرد به السلطان في ظل القانون الأساسي العثماني من حيث صلاحية التشريع؟",
+ opts:["حق نقض القوانين بشكل مطلق","حق تعيين جميع أعضاء البرلمان","حق إصدار القوانين بمفرده","حق اقتراح القوانين وحده، فيما اقتصر النواب على حق إبداء الرغبة"],ans:3},
+
+{q:"متى افتُتح أول برلمان في تاريخ الدولة العثمانية؟",
+ opts:["كانون الأول 1876","آذار 1876","شباط 1878","آذار 1877"],ans:3},
+
+{q:"متى علّق السلطان عبد الحميد أحكامَ الدستور العثماني؟",
+ opts:["آذار 1877","نيسان 1879","أيار 1880","الرابع عشر من شباط 1878"],ans:3},
+
+{q:"كم استمر تعطيل الدستور العثماني تقريباً بعد تعليقه؟",
+ opts:["عشر سنوات","عشرين سنة","خمسة وثلاثين عاماً","ما يقارب ثلاثين عاماً"],ans:3},
+
+{q:"ما الذي أدّى إلى محاولة الجيش خلع السلطان عبد الحميد عام 1908؟",
+ opts:["هزيمة الدولة في الحرب الروسية","ضغوط الدول الأوروبية","رفض السلطان التوقيع على معاهدة برلين","تعليق الدستور وتعطيل المجلس وسيادة الفساد والإرهاب وقيام الثورات"],ans:3},
+
+{q:"ما الحزب الذي دفعه السلطان عبد الحميد عام 1909 إلى الانقلاب لقمع الحركة الدستورية؟",
+ opts:["حزب الأحرار العثمانيين","حزب الدستور والتقدم","حزب الشعب العثماني","حزب الاتحاد والترقي"],ans:3},
+
+{q:"من تولّى العرش العثماني بعد طرد السلطان عبد الحميد إثر انقلاب 1909؟",
+ opts:["محمد السادس","عبد المجيد الثاني","مراد الخامس","محمد رشاد"],ans:3},
+
+{q:"متى دخلت الدولة العثمانية الحرب العالمية الأولى وإلى جانب من؟",
+ opts:["1915م إلى جانب النمسا-المجر","1914م إلى جانب الحلفاء","1916م إلى جانب بلغاريا","1914م إلى جانب ألمانيا"],ans:3},
+
+/* ══ المبحث الثاني: الاحتلال البريطاني وقيام الدولة ══ */
+{q:"متى دخلت القوات البريطانية بغداد واحتلّتها؟",
+ opts:["كانون الثاني 1917","شباط 1917","نيسان 1917","آذار 1917"],ans:3},
+
+{q:"كيف حكمت بريطانيا العراق مباشرةً بعد دخولها بغداد؟",
+ opts:["بنظام مدني ديمقراطي","باتفاق مع الزعماء العراقيين","بموجب قانون الانتداب الدولي","بقوانين وسلطات عسكرية"],ans:3},
+
+{q:"اتفاقية سايكس-بيكو أُبرمت بين أيّ الدول؟",
+ opts:["بريطانيا وفرنسا فقط","إيطاليا وبريطانيا وفرنسا","بريطانيا وأمريكا وفرنسا","بريطانيا وفرنسا وروسيا القيصرية"],ans:3},
+
+{q:"في أيّ عام أُبرمت اتفاقية سايكس-بيكو؟",
+ opts:["1914","1915","1917","1916"],ans:3},
+
+{q:"كيف انكشفت أسرار اتفاقية سايكس-بيكو للرأي العام؟",
+ opts:["بتسريب من دبلوماسي بريطاني","بإعلانها من المسؤولين العراقيين","بكشفها في وثائق ويلسون الأمريكية","عند قيام الثورة الروسية 1917 حين عثرت السلطات الجديدة على وثائقها في خزانة القيصر"],ans:3},
+
+{q:"ماذا تضمّنت اتفاقية سايكس-بيكو فيما يخص الوطن العربي؟",
+ opts:["الاعتراف باستقلال الدول العربية","وضع الأراضي العربية تحت الوصاية الدولية","منح العرب حكماً ذاتياً واسعاً","تقسيم الوطن العربي إلى مناطق نفوذ بين الدول المنتصرة"],ans:3},
+
+{q:"ما الذي قرّره مؤتمر سان ريمو عام 1920 بشأن العراق؟",
+ opts:["منح العراق استقلاله الكامل","تقسيم العراق بين بريطانيا وفرنسا","منح العراق حكماً ذاتياً تحت إشراف عصبة الأمم","وضع العراق تحت الانتداب البريطاني"],ans:3},
+
+{q:"متى اندلعت ثورة العشرين العراقية التي واجهت القوات البريطانية؟",
+ opts:["آذار 1920","الأول من آب 1920","الثالث عشر من تموز 1920","الثلاثين من حزيران 1920"],ans:3},
+
+{q:"من كان المندوب السامي البريطاني الذي أُوفد إلى العراق لاحتواء نتائج ثورة العشرين؟",
+ opts:["ولسن","دافيدسون","يونك","السير برس كوكس"],ans:3},
+
+{q:"من ترأّس الحكومة العراقية المؤقتة الأولى التي تألّفت في تشرين الأول 1920؟",
+ opts:["فيصل بن الحسين","نوري السعيد","جعفر العسكري","عبد الرحمن الكيلاني – نقيب أشراف بغداد"],ans:3},
+
+{q:"ما المهام التي أُسندت إلى الحكومة المؤقتة العراقية عام 1920؟",
+ opts:["إقامة انتخابات فورية وتشكيل برلمان منتخب","إعلان الاستقلال والتفاوض مع عصبة الأمم","إدارة الشؤون الأمنية وطرد بقايا الجيش العثماني","تحديد النظام السياسي، والموافقة على المعاهدة مع بريطانيا، والشروع بإعداد مسودة الدستور"],ans:3},
+
+{q:"في أيّ مؤتمر صدر قرار إقامة حكومة عربية في العراق برئاسة الأمير فيصل؟",
+ opts:["مؤتمر لوزان","مؤتمر سان ريمو 1920","مؤتمر لندن 1921","مؤتمر القاهرة آذار 1921"],ans:3},
+
+{q:"من ترأّس مؤتمر القاهرة عام 1921 الذي قرّر تنصيب الأمير فيصل ملكاً على العراق؟",
+ opts:["لويد جورج","برس كوكس","بالفور","تشرشل وزير المستعمرات"],ans:3},
+
+{q:"ما نتيجة استفتاء تنصيب الأمير فيصل ملكاً على العراق؟",
+ opts:["51% من الأصوات","75% من الأصوات","85% من الأصوات","ما يقارب 97% من الأصوات"],ans:3},
+
+{q:"في أيّ تاريخ توّج الأمير فيصل ملكاً على العراق؟",
+ opts:["الأول من آب 1921","العاشر من تشرين الأول 1921","الحادي عشر من تشرين الثاني 1921","الثالث والعشرون من آب 1921"],ans:3},
+
+/* ══ المبحث الثالث: دستور 1925 ══ */
+{q:"ماذا نصّت المادة الثالثة من المعاهدة البريطانية-العراقية بخصوص القانون الأساسي؟",
+ opts:["تلتزم بريطانيا بإعداد الدستور وإقراره","يلتزم العراق بتطبيق القانون البريطاني","يُنشر الدستور في الجريدة البريطانية","يوافق جلالة ملك العراق على أن يُشرَّع قانون أساسي يُعرض على المجلس التأسيسي ولا يخالف نصوص المعاهدة"],ans:3},
+
+{q:"متى انتُخب المجلس التأسيسي العراقي؟",
+ opts:["تشرين الأول 1923","حزيران 1924","تموز 1924","آذار 1924"],ans:3},
+
+{q:"من قام بوضع المشروع الأولي للقانون الأساسي العراقي في وزارة المستعمرات البريطانية؟",
+ opts:["دافيدسون","السير برس كوكس","المستر ولسن","الميجر يونك"],ans:3},
+
+{q:"من ترأّس اللجنة التي شُكِّلت لدراسة مشروع القانون الأساسي العراقي أولاً؟",
+ opts:["عبد المحسن السعدون","نوري السعيد","جعفر العسكري","ناجي السويدي وزير العدلية"],ans:3},
+
+{q:"من ترأّس اللجنة الثانية التي أقرّت مشروع الدستور دون تعديل جوهري؟",
+ opts:["ناجي السويدي","نوري السعيد","رستم حيدر","عبد المحسن السعدون"],ans:3},
+
+{q:"متى نُشر مشروع القانون الأساسي العراقي في الصحف؟",
+ opts:["كانون الثاني 1923","آذار 1924","حزيران 1924","تشرين الثاني 1923"],ans:3},
+
+{q:"متى بدأ المجلس التأسيسي مناقشة مشروع القانون الأساسي؟",
+ opts:["آذار 1924","الأول من تموز 1924","الرابع عشر من آب 1924","الرابع عشر من حزيران 1924"],ans:3},
+
+{q:"متى أقرّ المجلس التأسيسي مشروع القانون الأساسي؟",
+ opts:["الثلاثون من حزيران 1924","الأول من آب 1924","الخامس والعشرون من آب 1924","العاشر من تموز 1924"],ans:3},
+
+{q:"متى صادق الملك فيصل الأول على القانون الأساسي العراقي؟",
+ opts:["الحادي والعشرون من كانون الثاني 1925","الأول من نيسان 1925","الخامس عشر من حزيران 1925","الحادي والعشرون من آذار 1925"],ans:3},
+
+{q:"كم يبلغ عدد مواد القانون الأساسي العراقي لعام 1925؟",
+ opts:["مئة مادة","مئة وعشر مواد","مئة وخمسون مادة","مئة وخمس وعشرون مادة"],ans:3},
+
+{q:"على كم بابٍ تتوزّع مواد القانون الأساسي العراقي؟",
+ opts:["سبعة أبواب","ثمانية أبواب","تسعة أبواب","عشرة أبواب"],ans:3},
+
+{q:"ما موضوع الباب الأول من القانون الأساسي العراقي 1925؟",
+ opts:["الملك وحقوقه","السلطة التشريعية","الوزارة","حقوق الشعب"],ans:3},
+
+{q:"ما موضوع الباب الثاني من القانون الأساسي العراقي 1925؟",
+ opts:["حقوق الشعب","السلطة القضائية","الأمور المالية","الملك وحقوقه"],ans:3},
+
+{q:"ما موضوع الباب الثالث من القانون الأساسي العراقي 1925؟",
+ opts:["الوزارة","الأمور المالية","الملك وحقوقه","السلطة التشريعية"],ans:3},
+
+{q:"ما موضوع الباب التاسع من القانون الأساسي العراقي 1925؟",
+ opts:["الأمور المالية","إدارة الأقاليم","تأييد القوانين والأحكام","تبديل أحكام القانون الأساسي"],ans:3},
+
+{q:"ما موضوع الباب السابع من القانون الأساسي العراقي 1925؟",
+ opts:["السلطة القضائية","الأمور المالية","تأييد القوانين","إدارة الأقاليم"],ans:3},
+
+{q:"حدّدت المادة (195) من القانون الأساسي أن السيادة الدستورية للأمة وديعةٌ لدى من؟",
+ opts:["الحكومة والوزارة","مجلس الأمة","الشعب العراقي مباشرةً","الملك فيصل ثم لورثته من بعده"],ans:3},
+
+{q:"ما خاصية النظام البرلماني التي أخذ بها دستور 1925 فيما يتعلق بثنائية السلطة التنفيذية؟",
+ opts:["الملك مسؤول وحده أمام البرلمان","الوزراء معيّنون دون مسؤولية سياسية","الرئيس يُنتخب مباشرةً من الشعب","الملك مصون وغير مسؤول، والوزراء مسؤولون أمام البرلمان"],ans:3},
+
+{q:"ما المادة من القانون الأساسي التي نصّت على أن الملك مصون وغير مسؤول؟",
+ opts:["المادة 22","المادة 28","المادة 30","المادة 25"],ans:3},
+
+{q:"ما شكل الحكومة الذي اعتمده دستور 1925 وفقاً لمادته الثانية؟",
+ opts:["جمهورية ديمقراطية","ملكية دستورية انتخابية","إمارة إسلامية","ملكية وراثية"],ans:3},
+
+{q:"كيف يُصنَّف دستور 1925 من حيث درجة المرونة؟",
+ opts:["دستور مرن يُعدَّل بالإجراءات العادية","دستور شبه مرن","دستور عرفي غير مكتوب","دستور جامد يستلزم إجراءات معقدة للتعديل"],ans:3},
+
+{q:"ما المادتان اللتان نظّمتا إجراءات تعديل دستور 1925؟",
+ opts:["المادتان 100 و101","المادتان 110 و112","المادتان 120 و122","المادتان 118 و119"],ans:3},
+
+{q:"ما الحظر الزمني الذي فرضه دستور 1925 على تعديل الأمور الفرعية؟",
+ opts:["لا يجوز التعديل قبل مرور خمس سنوات","لا يجوز التعديل قبل مرور ثلاث سنوات","لا يوجد حظر زمني","لا يجوز التعديل خلال سنة واحدة من تاريخ نفاذه"],ans:3},
+
+{q:"ما الأكثرية المطلوبة في المرحلة الأولى من تعديل دستور 1925؟",
+ opts:["الأغلبية البسيطة من كل مجلس","الإجماع من كلا المجلسين","أكثرية الثلثين من مجلس النواب فقط","أكثرية الثلثين من مجلسي النواب والأعيان"],ans:3},
+
+{q:"ما الإجراء التالي لموافقة المجلسَين بأكثرية الثلثين على التعديل؟",
+ opts:["يُعرض مباشرةً على الملك","يُطرح في استفتاء شعبي","يُرسل إلى المحكمة الدستورية","يُحل مجلس النواب وينتخب مجلس جديد"],ans:3},
+
+{q:"ما الحظر الموضوعي الذي تضمّنه دستور 1925 في مادته الثانية؟",
+ opts:["منع تعديل حقوق الشعب","منع تعديل شكل الحكومة الملكية","منع تعديل مواد الباب الأول كاملةً","منع إدخال أي تعديل على مدة الوصاية وحقوق الملك وورثته"],ans:3},
+
+{q:"ما موقف المحكمة العليا العراقية من تعديل مادة مدة الوصاية وحقوق الملك؟",
+ opts:["منعت التعديل مطلقاً","أجازته بأغلبية الثلثين فقط","أحالته إلى المجلس التأسيسي","أجازت التعديل بالإضافة في لائحة الدستور لكنها لم تُجزه بالحذف"],ans:3},
+
+{q:"ما الاختصاص التشريعي للملك في ظل القانون الأساسي 1925 وفق المادتَين 26 و28؟",
+ opts:["ينفرد الملك بسلطة التشريع","يقتصر دوره على إبلاغ المجلس","يختص بالتشريع في الشؤون الخارجية فقط","يشارك مجلس الأمة في السلطة التشريعية ويُعيّن أعضاء مجلس الأعيان ولا تصدر القوانين إلا بعد موافقته"],ans:3},
+
+{q:"وفقاً للمادة 62 من القانون الأساسي، ما الذي يحدث إذا لم يُعِد الملك مشروع القانون خلال ثلاثة أشهر؟",
+ opts:["يُعدّ المشروع مرفوضاً","يُحال إلى مجلس الأعيان","تتولى الحكومة نشره","يُعتبر المشروع مصادَقاً عليه تلقائياً"],ans:3},
+
+{q:"ما طبيعة حق اعتراض الملك على القوانين وفق دستور 1925؟",
+ opts:["مطلق ونهائي","استشاري فقط","مُقيَّد بموافقة رئيس الوزراء","توقيفي وليس مطلقاً"],ans:3},
+
+{q:"ما نوع المسؤولية الوزارية التي أخذ بها دستور 1925 وفق المادتَين 26 و66؟",
+ opts:["المسؤولية الجماعية أمام الملك فقط","المسؤولية الجنائية دون السياسية","المسؤولية الجماعية أمام مجلس الأعيان","المسؤولية الفردية والجماعية أمام مجلس النواب"],ans:3},
+
+{q:"ما الاختصاص التنفيذي للملك وفق المادة 25 من القانون الأساسي 1925؟",
+ opts:["يُدير الشؤون اليومية مباشرةً","ينفرد بإصدار القوانين التنفيذية","يُشرف على السلطة القضائية","هو رأس الدولة الأعلى ومصون وغير مسؤول ويباشر سلطاته عن طريق الوزارة بإرادات ملكية"],ans:3},
+
+{q:"متى قُبل العراق عضواً في عصبة الأمم واعتُبر ذلك تاريخ اكتمال استقلاله؟",
+ opts:["كانون الثاني 1930","آذار 1930","آب 1925","الأول من تشرين الثاني 1932"],ans:3},
+
+{q:"كيف فسّر الكتاب طريقة وضع دستور 1925 من حيث إرادة من صدر؟",
+ opts:["صدر بعقد حقيقي بين الملك والأمة","صدر بالاستفتاء الشعبي","صدر منحةً من الملك للشعب","صدر بمشيئة السلطات البريطانية لا بإرادة الملك ولا الشعب، وأُصدر لتظليل الرأي العام وكبح الثورة الشعبية"],ans:3}
+
+];
+
+/* ── State ── */
+let questions=[],current=0,correct=0,wrong=0,answered=false;
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }return arr;
+}
+
+function restartQuiz(){
+  current=0;correct=0;wrong=0;answered=false;
+  questions=shuffle([...allQuestions]);
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  const q=questions[current],total=questions.length;
+  document.getElementById('progress-fill').style.width=((current/total)*100)+'%';
+  document.getElementById('status').textContent=`سؤال ${current+1} من ${total}`;
+  document.getElementById('q-num').textContent=`س${current+1}`;
+  document.getElementById('question').textContent=q.q;
+  document.getElementById('correct-count').textContent=correct;
+  document.getElementById('wrong-count').textContent=wrong;
+  const fb=document.getElementById('feedback');fb.className='';fb.textContent='';
+  document.getElementById('next-btn').style.display='none';
+  const labels=['أ','ب','ج','د'],indices=[0,1,2,3];shuffle(indices);
+  const container=document.getElementById('options');container.innerHTML='';
+  indices.forEach((origIdx,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML=`<span class="opt-label">${labels[i]}</span>${q.opts[origIdx]}`;
+    btn.dataset.orig=origIdx;
+    btn.addEventListener('click',()=>handleAnswer(btn,origIdx,q.ans));
+    container.appendChild(btn);
+  });
+}
+
+function handleAnswer(clickedBtn,chosen,correct_orig){
+  if(answered)return;answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled=true;
+    if(parseInt(b.dataset.orig)===correct_orig)b.classList.add('correct');
+  });
+  const fb=document.getElementById('feedback');
+  if(chosen===correct_orig){
+    correct++;
+    clickedBtn.classList.add('correct');
+    fb.textContent='✅ إجابة صحيحة!';
+    fb.className='show ok';
+  } else {
+    wrong++;
+    clickedBtn.classList.add('wrong');
+    fb.textContent='❌ إجابة خاطئة! الجواب الصحيح محدد باللون الأخضر.';
+    fb.className='show err';
+  }
+  document.getElementById('correct-count').textContent=correct;
+  document.getElementById('wrong-count').textContent=wrong;
+  document.getElementById('next-btn').style.display='block';
+}
+
+document.getElementById('next-btn').addEventListener('click',()=>{
+  current++;
+  if(current>=questions.length)showResult();else showQuestion();
+});
+
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  const total=questions.length,pct=Math.round((correct/total)*100);
+  document.getElementById('result-score').textContent=`${correct} / ${total}`;
+  document.getElementById('r-correct').textContent=correct;
+  document.getElementById('r-wrong').textContent=wrong;
+  document.getElementById('r-pct').textContent=pct+'%';
+  let msg='',trophy='🏆';
+  if(pct>=90){msg='ممتاز! أداء رائع ومتميز 🌟';trophy='🥇';}
+  else if(pct>=75){msg='جيد جداً! مستوى متقدم 👏';trophy='🥈';}
+  else if(pct>=60){msg='جيد، راجع الفصل لتعزيز المعلومات 📖';trophy='🥉';}
+  else{msg='يُنصح بمراجعة الفصل مجدداً وإعادة الاختبار 📚';trophy='📚';}
+  document.getElementById('trophy').textContent=trophy;
+  document.getElementById('result-msg').textContent=msg;
+}
+
+restartQuiz();
+</script>
+</body>
+</html>
