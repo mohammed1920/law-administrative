@@ -1,9 +1,10 @@
 import os
 import re
-import requests
+import urllib.request
+import json
 
 def get_repo_info():
-    """يجلب وصف المستودع من جيت هوب تلقائياً"""
+    """يجلب وصف المستودع باستخدام مكتبة البايثون الأساسية"""
     try:
         # الحصول على رابط المستودع
         repo_url = os.popen("git remote get-url origin").read().strip()
@@ -13,9 +14,11 @@ def get_repo_info():
             repo_name = match.group(2).replace('.git', '')
             
             api_url = f"https://api.github.com/repos/{user_name}/{repo_name}"
-            response = requests.get(api_url)
-            if response.status_code == 200:
-                desc = response.json().get('description')
+            
+            # فتح الرابط باستخدام مكتبة urllib الأساسية
+            with urllib.request.urlopen(api_url) as response:
+                data = json.loads(response.read().decode())
+                desc = data.get('description')
                 if desc:
                     return desc
     except:
@@ -29,7 +32,6 @@ def get_html_title(file_path):
             content = f.read()
             match = re.search(r'<title>(.*?)</title>', content, re.IGNORECASE | re.DOTALL)
             if match:
-                # نأخذ الجزء الأول من العنوان فقط قبل الفاصلة
                 return match.group(1).split('-')[0].strip()
     except:
         pass
@@ -39,7 +41,6 @@ def generate_index():
     main_file = "index.html"
     files = sorted([f for f in os.listdir('.') if f.startswith('ch') and f.endswith('.html')])
     
-    # جلب العنوان من الوصف
     book_title = get_repo_info()
     
     with open(main_file, "w", encoding="utf-8") as f:
