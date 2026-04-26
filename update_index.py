@@ -54,7 +54,7 @@ def generate_index():
         # التعديل هنا: وضع اسم الكتاب بدل الجملة السابقة
         f.write('<div class="header">\n')
         f.write('  <h1>فهرس فصول الكتاب</h1>\n')
-        f.write('  <div class="book-name"> القانون الدستوري</div>\n') 
+        f.write('  <div class="book-name"> القضاء الإداري </div>\n') 
         f.write('</div>\n')
         
         f.write('<div class="container">\n')
