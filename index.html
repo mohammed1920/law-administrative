@@ -33,53 +33,37 @@
 </style>
 </head>
 <body>
-
 <div class="header">
   <h1>فهرس فصول الكتاب</h1>
-  <div class="book-name">القضاء الإداري</div>
+  <div class="book-name"> القانون الدستوري</div>
 </div>
-
-<div class="container" id="chapters-container">
-  <a href="ch01.html" class="chapter-card"><span class="chapter-icon">1</span><span class="chapter-title">جاري التحميل...</span></a>
-  <a href="ch02.html" class="chapter-card"><span class="chapter-icon">2</span><span class="chapter-title">جاري التحميل...</span></a>
-  <a href="ch03.html" class="chapter-card"><span class="chapter-icon">3</span><span class="chapter-title">جاري التحميل...</span></a>
-  <a href="ch04.html" class="chapter-card"><span class="chapter-icon">4</span><span class="chapter-title">جاري التحميل...</span></a>
-  <a href="ch05.html" class="chapter-card"><span class="chapter-icon">5</span><span class="chapter-title">جاري التحميل...</span></a>
-  <a href="ch1.html" class="chapter-card"><span class="chapter-icon">6</span><span class="chapter-title">جاري التحميل...</span></a>
-
+<div class="container">
+  <a href="ch01.html" class="chapter-card">
+    <span class="chapter-icon">1</span>
+    <span class="chapter-title">اسئلة القضاء الإداري - الجزء الاول</span>
+  </a>
+  <a href="ch02.html" class="chapter-card">
+    <span class="chapter-icon">2</span>
+    <span class="chapter-title">اسئلة القضاء الإداري - الجزء الثاني)</span>
+  </a>
+  <a href="ch03.html" class="chapter-card">
+    <span class="chapter-icon">3</span>
+    <span class="chapter-title">القضاء الإداري - الملف الثالث (187-279)</span>
+  </a>
+  <a href="ch04.html" class="chapter-card">
+    <span class="chapter-icon">4</span>
+    <span class="chapter-title">القضاء الإداري - الملف الرابع (280-372)</span>
+  </a>
+  <a href="ch05.html" class="chapter-card">
+    <span class="chapter-icon">5</span>
+    <span class="chapter-title">القضاء الإداري الجزء الخامس</span>
+  </a>
+  <a href="ch1.html" class="chapter-card">
+    <span class="chapter-icon">6</span>
+    <span class="chapter-title">ملف خاص بالتعديلات</span>
+  </a>
   <a href="https://t.me/M5M5P" class="telegram-btn">انضم لقناة التليجرام ✈️</a>
-  <div class="footer">تم التحديث بواسطة فاعل خير</div>
+  <div class="footer">تم التحديث بواسطة فاعل خير  </div>
 </div>
-
-<script>
-  // وظيفة لجلب العناوين من ملفات الفصول تلقائياً
-  async function fetchChapterTitles() {
-    const links = document.querySelectorAll('.chapter-card');
-    
-    links.forEach(async (link) => {
-      const url = link.getAttribute('href');
-      if (url && url.startsWith('ch')) { // يقرأ فقط الملفات اللي تبدأ بـ ch
-        try {
-          const response = await fetch(url);
-          const text = await response.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(text, 'text/html');
-          const title = doc.querySelector('title').innerText;
-          
-          // تحديث نص الفصل فقط، ولا يلمس اسم الكتاب الفوق
-          if (title) {
-            link.querySelector('.chapter-title').innerText = title;
-          }
-        } catch (error) {
-          console.error("خطأ في جلب عنوان الملف:", url);
-        }
-      }
-    });
-  }
-
-  // تشغيل الوظيفة عند فتح الصفحة
-  window.onload = fetchChapterTitles;
-</script>
-
 </body>
 </html>
